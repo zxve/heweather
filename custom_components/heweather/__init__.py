@@ -34,41 +34,47 @@ PLATFORMS = ["sensor", "weather"]
 
 
 async def async_setup(hass: HomeAssistant, config: Config) -> bool:
-    hass.data.setdefault(DOMAIN, {})
-    return True
+    try:
+        hass.data.setdefault(DOMAIN, {})
+        return True
+    except Exception as e:
+        _LOGGER.info(f"zxve 001 {e}")
 
 
 async def async_setup_entry(hass, config_entry) -> bool:
-    api_key = config_entry.data[CONF_API_KEY]
-    location_key = config_entry.unique_id
-    longitude = config_entry.data[CONF_LONGITUDE]
-    latitude = config_entry.data[CONF_LATITUDE]
-    api_version = config_entry.data[CONF_API_VERSION]
+    try:
+        api_key = config_entry.data[CONF_API_KEY]
+        location_key = config_entry.unique_id
+        longitude = config_entry.data[CONF_LONGITUDE]
+        latitude = config_entry.data[CONF_LATITUDE]
+        api_version = config_entry.data[CONF_API_VERSION]
 
-    _LOGGER.debug("Using location_key: %s, get forecast: %s", location_key, api_version)
+        _LOGGER.debug("Using location_key: %s, get forecast: %s", location_key, api_version)
 
-    websession = async_get_clientsession(hass)
+        websession = async_get_clientsession(hass)
 
-    coordinator = HeweatherDataUpdateCoordinator(hass, websession, api_key, api_version, location_key, longitude,
-                                                 latitude)
-    await coordinator.async_refresh()
+        coordinator = HeweatherDataUpdateCoordinator(hass, websession, api_key, api_version, location_key, longitude,
+                                                     latitude)
+        await coordinator.async_refresh()
 
-    if not coordinator.last_update_success:
-        raise ConfigEntryNotReady
+        if not coordinator.last_update_success:
+            raise ConfigEntryNotReady
 
-    undo_listener = config_entry.add_update_listener(update_listener)
+        undo_listener = config_entry.add_update_listener(update_listener)
 
-    hass.data[DOMAIN][config_entry.entry_id] = {
-        COORDINATOR: coordinator,
-        UNDO_UPDATE_LISTENER: undo_listener,
-    }
+        hass.data[DOMAIN][config_entry.entry_id] = {
+            COORDINATOR: coordinator,
+            UNDO_UPDATE_LISTENER: undo_listener,
+        }
 
-    for component in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(config_entry, component)
-        )
+        for component in PLATFORMS:
+            hass.async_create_task(
+                hass.config_entries.async_forward_entry_setup(config_entry, component)
+            )
 
-    return True
+        return True
+    except Exception as e:
+        _LOGGER.info(f"zxve 002 {e}")
 
 
 async def async_unload_entry(hass, config_entry):

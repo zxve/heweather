@@ -17,7 +17,7 @@ from .const import (
 import voluptuous as vol
 
 _LOGGER = logging.getLogger(__name__)
-_LOGGER.info("zxve 001")
+_LOGGER.info("zxve 010")
 
 
 @config_entries.HANDLERS.register(DOMAIN)
@@ -37,41 +37,48 @@ class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return resdata
 
     async def async_step_user(self, user_input=None):
-        self._errors = {}
-        if user_input is not None:
-            existing = await self._check_existing(user_input[CONF_NAME])
-            if existing:
-                return self.async_abort(reason="already_configured")
+        try:
+            self._errors = {}
+            if user_input is not None:
+                existing = await self._check_existing(user_input[CONF_NAME])
+                if existing:
+                    return self.async_abort(reason="already_configured")
 
-            url = str.format("https://devapi.qweather.com/{}/weather/now?location={},{}&key={}", user_input["api_version"],
-                             user_input["longitude"], user_input["latitude"], user_input["api_key"])
-            redata = await self.hass.async_add_executor_job(self.get_data, url)
-            status = redata['status']
-            if status == "ok":
-                await self.async_set_unique_id(f"{user_input['longitude']}-{user_input['latitude']}".replace(".", "_"))
-                self._abort_if_unique_id_configured()
-                return self.async_create_entry(
-                    title=user_input[CONF_NAME], data=user_input
-                )
-            else:
-                self._errors["base"] = "communication"
+                url = str.format("https://devapi.qweather.com/{}/weather/now?location={},{}&key={}",
+                                 user_input["api_version"],
+                                 user_input["longitude"], user_input["latitude"], user_input["api_key"])
+                redata = await self.hass.async_add_executor_job(self.get_data, url)
+                status = redata['status']
+                if status == "ok":
+                    await self.async_set_unique_id(
+                        f"{user_input['longitude']}-{user_input['latitude']}".replace(".", "_"))
+                    self._abort_if_unique_id_configured()
+                    return self.async_create_entry(
+                        title=user_input[CONF_NAME], data=user_input
+                    )
+                else:
+                    self._errors["base"] = "communication"
+
+                return await self._show_config_form(user_input)
 
             return await self._show_config_form(user_input)
-
-        return await self._show_config_form(user_input)
+        except Exception as e:
+            _LOGGER.info(f"zxve 011 {e}")
 
     async def _show_config_form(self, user_input):
-
-        api_version = "v7"
-        data_schema = OrderedDict()
-        data_schema[vol.Required(CONF_API_KEY)] = str
-        data_schema[vol.Optional("api_version", default=api_version)] = str
-        data_schema[vol.Optional(CONF_LONGITUDE, default=self.hass.config.longitude)] = cv.longitude
-        data_schema[vol.Optional(CONF_LATITUDE, default=self.hass.config.latitude)] = cv.latitude
-        data_schema[vol.Optional(CONF_NAME, default=self.hass.config.location_name)] = str
-        return self.async_show_form(
-            step_id="user", data_schema=vol.Schema(data_schema), errors=self._errors
-        )
+        try:
+            api_version = "v7"
+            data_schema = OrderedDict()
+            data_schema[vol.Required(CONF_API_KEY)] = str
+            data_schema[vol.Optional("api_version", default=api_version)] = str
+            data_schema[vol.Optional(CONF_LONGITUDE, default=self.hass.config.longitude)] = cv.longitude
+            data_schema[vol.Optional(CONF_LATITUDE, default=self.hass.config.latitude)] = cv.latitude
+            data_schema[vol.Optional(CONF_NAME, default=self.hass.config.location_name)] = str
+            return self.async_show_form(
+                step_id="user", data_schema=vol.Schema(data_schema), errors=self._errors
+            )
+        except Exception as e:
+            _LOGGER.info(f"zxve 012 {e}")
 
     async def async_step_import(self, user_input):
         if self._async_current_entries():
