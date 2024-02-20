@@ -21,12 +21,9 @@ from homeassistant.const import (
     DEVICE_CLASS_TEMPERATURE,
     SPEED_KILOMETERS_PER_HOUR,
     SPEED_MILES_PER_HOUR,
-    LENGTH_MILES,
-    LENGTH_KILOMETERS,
-    LENGTH_INCHES,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-    DEGREE,
+    UnitOfLength,
+    UnitOfTemperature,
+    DEGREE
 )
 
 ATTRIBUTION = "Data provided by zxve"
@@ -60,15 +57,15 @@ SENSOR_TYPES = {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ICON: None,
         ATTR_LABEL: "温度",
-        ATTR_UNIT_METRIC: TEMP_CELSIUS,
-        ATTR_UNIT_IMPERIAL: TEMP_FAHRENHEIT,
+        ATTR_UNIT_METRIC: UnitOfTemperature.CELSIUS,
+        ATTR_UNIT_IMPERIAL: UnitOfTemperature.FAHRENHEIT,
     },
     "felt_temperature": {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ICON: None,
         ATTR_LABEL: "体感温度",
-        ATTR_UNIT_METRIC: TEMP_CELSIUS,
-        ATTR_UNIT_IMPERIAL: TEMP_FAHRENHEIT,
+        ATTR_UNIT_METRIC: UnitOfTemperature.CELSIUS,
+        ATTR_UNIT_IMPERIAL: UnitOfTemperature.FAHRENHEIT,
     },
     "text": {
         ATTR_DEVICE_CLASS: None,
@@ -117,7 +114,7 @@ SENSOR_TYPES = {
         ATTR_ICON: "mdi:weather-rainy",
         ATTR_LABEL: "当前小时累计雨量",
         ATTR_UNIT_METRIC: "mm",
-        ATTR_UNIT_IMPERIAL: LENGTH_INCHES,
+        ATTR_UNIT_IMPERIAL: UnitOfLength.INCHES,
     },
     "pressure": {
         ATTR_DEVICE_CLASS: None,
@@ -130,8 +127,8 @@ SENSOR_TYPES = {
         ATTR_DEVICE_CLASS: None,
         ATTR_ICON: "mdi:weather-fog",
         ATTR_LABEL: "能见度",
-        ATTR_UNIT_METRIC: LENGTH_KILOMETERS,
-        ATTR_UNIT_IMPERIAL: LENGTH_MILES,
+        ATTR_UNIT_METRIC: UnitOfLength.KILOMETERS,
+        ATTR_UNIT_IMPERIAL: UnitOfLength.MILES,
     },
     "cloudrate": {
         ATTR_DEVICE_CLASS: None,
@@ -144,8 +141,8 @@ SENSOR_TYPES = {
         ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
         ATTR_ICON: None,
         ATTR_LABEL: "露点温度",
-        ATTR_UNIT_METRIC: TEMP_CELSIUS,
-        ATTR_UNIT_IMPERIAL: TEMP_FAHRENHEIT,
+        ATTR_UNIT_METRIC: UnitOfTemperature.CELSIUS,
+        ATTR_UNIT_IMPERIAL: UnitOfTemperature.FAHRENHEIT,
     },
     "place": {
         ATTR_DEVICE_CLASS: None,
