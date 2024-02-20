@@ -3,5 +3,6 @@
     "content_in_root": false,
     "render_readme": true,
     "country": "CN",
-    "homeassistant": "2024.2.20"
+    "homeassistant": "2024.2.2"
+    "domains": ["weather","sensor"],
 }
