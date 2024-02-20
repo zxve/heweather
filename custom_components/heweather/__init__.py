@@ -28,20 +28,17 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+_LOGGER.info("zxve 000")
 
 PLATFORMS = ["sensor", "weather"]
 
 
 async def async_setup(hass: HomeAssistant, config: Config) -> bool:
-    _LOGGER.debug("zxve 000")
-
     hass.data.setdefault(DOMAIN, {})
     return True
 
 
 async def async_setup_entry(hass, config_entry) -> bool:
-    _LOGGER.debug("zxve 001")
-
     api_key = config_entry.data[CONF_API_KEY]
     location_key = config_entry.unique_id
     longitude = config_entry.data[CONF_LONGITUDE]

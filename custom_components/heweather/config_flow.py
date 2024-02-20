@@ -17,6 +17,7 @@ from .const import (
 import voluptuous as vol
 
 _LOGGER = logging.getLogger(__name__)
+_LOGGER.info("zxve 001")
 
 
 @config_entries.HANDLERS.register(DOMAIN)
@@ -35,9 +36,7 @@ class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
         resdata = json.loads(json_text)
         return resdata
 
-    async def async_step_user(self, user_input={}):
-        _LOGGER.debug("zxve 110")
-
+    async def async_step_user(self, user_input=None):
         self._errors = {}
         if user_input is not None:
             existing = await self._check_existing(user_input[CONF_NAME])
@@ -95,8 +94,6 @@ class HeweatherOptionsFlow(config_entries.OptionsFlow):
         return await self.async_step_user()
 
     async def async_step_user(self, user_input=None):
-        _LOGGER.debug("zxve 111")
-
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
