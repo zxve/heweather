@@ -1,3 +1,11 @@
+from homeassistant.components.sensor import SensorDeviceClass
+from homeassistant.const import (
+    ATTR_DEVICE_CLASS,
+    UnitOfLength,
+    UnitOfTemperature,
+    DEGREE, UnitOfSpeed
+)
+
 DOMAIN = "heweather"
 
 PLATFORMS = ["sensor"]
@@ -15,16 +23,6 @@ ISSUE_URL = ""
 STARTUP = """
 
 """
-
-from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
-    DEVICE_CLASS_TEMPERATURE,
-    SPEED_KILOMETERS_PER_HOUR,
-    SPEED_MILES_PER_HOUR,
-    UnitOfLength,
-    UnitOfTemperature,
-    DEGREE
-)
 
 ATTRIBUTION = "Data provided by zxve"
 ATTR_ICON = "icon"
@@ -54,14 +52,14 @@ OPTIONAL_SENSORS = (
 
 SENSOR_TYPES = {
     "temperature": {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_DEVICE_CLASS: SensorDeviceClass.TEMPERATURE,
         ATTR_ICON: None,
         ATTR_LABEL: "温度",
         ATTR_UNIT_METRIC: UnitOfTemperature.CELSIUS,
         ATTR_UNIT_IMPERIAL: UnitOfTemperature.FAHRENHEIT,
     },
     "felt_temperature": {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_DEVICE_CLASS: SensorDeviceClass.TEMPERATURE,
         ATTR_ICON: None,
         ATTR_LABEL: "体感温度",
         ATTR_UNIT_METRIC: UnitOfTemperature.CELSIUS,
@@ -99,8 +97,8 @@ SENSOR_TYPES = {
         ATTR_DEVICE_CLASS: None,
         ATTR_ICON: "mdi:weather-windy",
         ATTR_LABEL: "风速",
-        ATTR_UNIT_METRIC: SPEED_KILOMETERS_PER_HOUR,
-        ATTR_UNIT_IMPERIAL: SPEED_MILES_PER_HOUR,
+        ATTR_UNIT_METRIC: UnitOfSpeed.KILOMETERS_PER_HOUR,
+        ATTR_UNIT_IMPERIAL: UnitOfSpeed.MILES_PER_HOUR,
     },
     "humidity": {
         ATTR_DEVICE_CLASS: None,
@@ -138,7 +136,7 @@ SENSOR_TYPES = {
         ATTR_UNIT_IMPERIAL: "%",
     },
     "dew": {
-        ATTR_DEVICE_CLASS: DEVICE_CLASS_TEMPERATURE,
+        ATTR_DEVICE_CLASS: SensorDeviceClass.TEMPERATURE,
         ATTR_ICON: None,
         ATTR_LABEL: "露点温度",
         ATTR_UNIT_METRIC: UnitOfTemperature.CELSIUS,
