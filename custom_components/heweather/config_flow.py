@@ -66,7 +66,7 @@ class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             api_version = "v7"
             data_schema = OrderedDict()
             data_schema[vol.Required(CONF_API_KEY)] = str
-            data_schema[vol.Required(CONF_SENSORS)] = str
+            data_schema[vol.Optional("location", default="sensor.location")] = str
             data_schema[vol.Optional("api_version", default=api_version)] = str
             data_schema[vol.Optional(CONF_LONGITUDE, default=self.hass.config.longitude)] = cv.longitude
             data_schema[vol.Optional(CONF_LATITUDE, default=self.hass.config.latitude)] = cv.latitude
