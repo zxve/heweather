@@ -16,12 +16,9 @@ from homeassistant.util.unit_system import METRIC_SYSTEM
 
 from .const import (
     CONF_DAILYSTEPS,
-    CONF_HOURLYSTEPS,
-    CONF_ALERT,
     CONF_API_VERSION,
     CONF_LONGITUDE,
     CONF_LATITUDE,
-    CONF_STARTTIME,
     COORDINATOR,
     DOMAIN,
     UNDO_UPDATE_LISTENER, CONF_LOCATION,
