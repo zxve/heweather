@@ -35,8 +35,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 class HeweatherSensor(Entity):
     def __init__(self, name, kind, coordinator, forecast_day=None):
-        _LOGGER.info(coordinator)
-
         self._name = name
         self.kind = kind
         self.coordinator = coordinator
@@ -75,34 +73,35 @@ class HeweatherSensor(Entity):
 
     @property
     def state(self):
+        now_data = self.coordinator.data["now"]
         if self.kind == "temperature":
-            return self.coordinator.data["result"]["realtime"][self.kind]
+            return now_data["temp"]
         if self.kind == "felt_temperature":
-            return self.coordinator.data["result"]["realtime"][self.kind]
+            return now_data["feelsLike"]
         if self.kind == "text":
-            return self.coordinator.data["result"]["realtime"][self.kind]
+            return now_data["text"]
         if self.kind == "WindDir":
-            return self.coordinator.data["result"]["realtime"]["wind"]["direction"]
+            return now_data["windDir"]
         if self.kind == "WindDir360":
-            return self.coordinator.data["result"]["realtime"]["wind"]["direction360"]
+            return now_data["WindDir360"]
         if self.kind == "WindScale":
-            return self.coordinator.data["result"]["realtime"]["wind"]["scale"]
+            return now_data["WindScale"]
         if self.kind == "WindSpeed":
-            return self.coordinator.data["result"]["realtime"]["wind"]["speed"]
+            return now_data["WindSpeed"]
         if self.kind == "humidity":
-            return round(float(self.coordinator.data["result"]["realtime"][self.kind]) * 100)
+            return round(float(now_data["humidity"]) * 100)
         if self.kind == "precipitation":
-            return self.coordinator.data["result"]["realtime"]["precipitation"]["local"]["intensity"]
+            return now_data["precip"]
         if self.kind == "pressure":
-            return self.coordinator.data["result"]["realtime"][self.kind]
+            return now_data["pressure"]
         if self.kind == "visibility":
-            return self.coordinator.data["result"]["realtime"][self.kind]
+            return now_data["vis"]
         if self.kind == "cloudrate":
-            return self.coordinator.data["result"]["realtime"][self.kind]
+            return now_data["cloud"]
         if self.kind == "dew":
-            return self.coordinator.data["result"]["realtime"][self.kind]
+            return now_data["dew"]
         if self.kind == "place":
-            return self.coordinator.data["place"]
+            return now_data["place"]
 
     @property
     def icon(self):
@@ -119,17 +118,17 @@ class HeweatherSensor(Entity):
     # @property
     # def extra_state_attributes(self):
     #     if self.kind == "ultraviolet":
-    #         self._attrs["desc"] = self.coordinator.data["result"]["realtime"]["life_index"]["ultraviolet"]["desc"]
+    #         self._attrs["desc"] = now_data["realtime"]["life_index"]["ultraviolet"]["desc"]
     #     elif self.kind == "comfort":
-    #         self._attrs["desc"] = self.coordinator.data["result"]["realtime"]["life_index"]["comfort"]["desc"]
+    #         self._attrs["desc"] = now_data["realtime"]["life_index"]["comfort"]["desc"]
     #     elif self.kind == "place":
     #         self._attrs["desc"] = self.coordinator.data["place"]
     #     elif self.kind == "precipitation":
-    #         self._attrs["datasource"] = self.coordinator.data["result"]["realtime"]["precipitation"]["local"][
+    #         self._attrs["datasource"] = now_data["realtime"]["precipitation"]["local"][
     #             "datasource"]
-    #         self._attrs["nearest_intensity"] = self.coordinator.data["result"]["realtime"]["precipitation"]["nearest"][
+    #         self._attrs["nearest_intensity"] = now_data["realtime"]["precipitation"]["nearest"][
     #             "intensity"]
-    #         self._attrs["nearest_distance"] = self.coordinator.data["result"]["realtime"]["precipitation"]["nearest"][
+    #         self._attrs["nearest_distance"] = now_data["realtime"]["precipitation"]["nearest"][
     #             "distance"]
     #     return self._attrs
 

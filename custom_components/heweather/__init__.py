@@ -136,6 +136,7 @@ class HeweatherDataUpdateCoordinator(DataUpdateCoordinator):
                                  lon, lat, self.api_key)
                 # json_text = requests.get(url).content
                 resdata = await self.hass.async_add_executor_job(self.get_data, url)
+                resdata['place'] = f'{lat}/{lon}'
         except (
                 ClientConnectorError
         ) as error:
