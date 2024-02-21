@@ -134,7 +134,7 @@ class HeweatherEntity(WeatherEntity):
     @property
     def condition(self):
         skycon = self.coordinator.data["now"]["text"]
-        return CONDITION_MAP[skycon]
+        return CONDITION_MAP.get(skycon, None)
 
     @property
     def native_temperature(self):
