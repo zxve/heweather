@@ -96,8 +96,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class HeweatherEntity(WeatherEntity):
     def __init__(self, name, coordinator):
         self.coordinator = coordinator
-        _LOGGER.debug("coordinator111: %s", coordinator.data)
-        _LOGGER.debug("coordinator: %s", coordinator.data["obsTime"])
+        _LOGGER.debug("coordinator: %s", coordinator.data["updateTime"])
         self._name = name
         self._attrs = {}
         self._unit_system = "Metric" if self.coordinator.data["is_metric"] == "metric:v2" else "Imperial"

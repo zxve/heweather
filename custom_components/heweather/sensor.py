@@ -102,7 +102,7 @@ class HeweatherSensor(Entity):
         if self.kind == "dew":
             return self.now_data["dew"]
         if self.kind == "place":
-            return self.now_data["place"]
+            return self.coordinator.data["fxLink"].splite("/")[-1].splite("-")[0]
 
     @property
     def icon(self):
