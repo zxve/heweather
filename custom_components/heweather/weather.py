@@ -133,12 +133,12 @@ class HeweatherEntity(WeatherEntity):
 
     @property
     def condition(self):
-        skycon = self.coordinator.data["text"]
+        skycon = self.coordinator.data["now"]["text"]
         return CONDITION_MAP[skycon]
 
     @property
     def native_temperature(self):
-        return self.coordinator.data['temperature']
+        return self.coordinator.data["now"]['temperature']
 
     @property
     def native_temperature_unit(self):
@@ -146,26 +146,26 @@ class HeweatherEntity(WeatherEntity):
 
     @property
     def humidity(self):
-        return self.coordinator.data['humidity']
+        return self.coordinator.data["now"]['humidity']
 
     @property
     def native_wind_speed(self):
         """风速"""
-        return self.coordinator.data['windSpeed']
+        return self.coordinator.data["now"]['windSpeed']
 
     @property
     def wind_bearing(self):
         """风向"""
-        return self.coordinator.data['windDir']
+        return self.coordinator.data["now"]['windDir']
 
     @property
     def native_visibility(self):
         """能见度"""
-        return self.coordinator.data['visibility']
+        return self.coordinator.data["now"]['visibility']
 
     @property
     def native_pressure(self):
-        return self.coordinator.data['pressure']
+        return self.coordinator.data["now"]['pressure']
 
     # @property
     # def pm25(self):
