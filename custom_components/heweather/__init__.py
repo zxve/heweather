@@ -15,10 +15,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from homeassistant.util.unit_system import METRIC_SYSTEM
 
 from .const import (
-    CONF_DAILYSTEPS,
     CONF_API_VERSION,
-    CONF_LONGITUDE,
-    CONF_LATITUDE,
     COORDINATOR,
     DOMAIN,
     UNDO_UPDATE_LISTENER, CONF_LOCATION,
@@ -119,6 +116,7 @@ class HeweatherDataUpdateCoordinator(DataUpdateCoordinator):
         return resdata
 
     def get_sensor_location(self):
+        # lat, lon = self.hass.states.get('sensor.location').state.split(",")
         lat, lon = self.hass.states.get(self.location).state.split(",")
         lat = lat.strip()[1:]
         lon = lon.strip()[:-1]

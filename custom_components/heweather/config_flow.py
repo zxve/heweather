@@ -2,12 +2,13 @@ import logging
 
 import requests
 import json
-from homeassistant.const import CONF_API_KEY, CONF_NAME, CONF_SENSORS
+import homeassistant.helpers.config_validation as cv
+from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME, CONF_SENSORS
 from collections import OrderedDict
 from homeassistant import config_entries
 from homeassistant.core import callback
 from .const import (
-    DOMAIN,
+    DOMAIN
 )
 import voluptuous as vol
 
@@ -67,8 +68,8 @@ class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema[vol.Required(CONF_API_KEY)] = str
             data_schema[vol.Required(CONF_SENSORS)] = str
             data_schema[vol.Optional("api_version", default=api_version)] = str
-            # data_schema[vol.Optional(CONF_LONGITUDE, default=self.hass.config.longitude)] = cv.longitude
-            # data_schema[vol.Optional(CONF_LATITUDE, default=self.hass.config.latitude)] = cv.latitude
+            data_schema[vol.Optional(CONF_LONGITUDE, default=self.hass.config.longitude)] = cv.longitude
+            data_schema[vol.Optional(CONF_LATITUDE, default=self.hass.config.latitude)] = cv.latitude
             data_schema[vol.Optional(CONF_NAME, default=self.hass.config.location_name)] = str
             return self.async_show_form(
                 step_id="user", data_schema=vol.Schema(data_schema), errors=self._errors
