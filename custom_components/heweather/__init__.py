@@ -28,7 +28,7 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
-_LOGGER.info("zxve 000")
+# _LOGGER.info("zxve 000")
 
 PLATFORMS = ["sensor", "weather"]
 
@@ -71,7 +71,6 @@ async def async_setup_entry(hass, config_entry) -> bool:
 
         return True
     except Exception as e:
-        _LOGGER.info(f"zxve 002 {e}")
         raise e
 
 

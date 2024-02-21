@@ -35,6 +35,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
 class HeweatherSensor(Entity):
     def __init__(self, name, kind, coordinator, forecast_day=None):
+        _LOGGER.info(coordinator)
+
         self._name = name
         self.kind = kind
         self.coordinator = coordinator
