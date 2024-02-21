@@ -146,7 +146,7 @@ class HeweatherEntity(WeatherEntity):
 
     @property
     def humidity(self):
-        return self.coordinator.data["now"]['humidity']
+        return float(self.coordinator.data["now"]['humidity'])
 
     @property
     def native_wind_speed(self):

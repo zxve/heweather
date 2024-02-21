@@ -90,7 +90,7 @@ class HeweatherSensor(Entity):
         if self.kind == "windSpeed":
             return self.now_data["windSpeed"]
         if self.kind == "humidity":
-            return self.now_data["humidity"]
+            return float(self.now_data["humidity"])
         if self.kind == "precipitation":
             return self.now_data["precip"]
         if self.kind == "pressure":
