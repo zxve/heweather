@@ -138,7 +138,7 @@ class HeweatherEntity(WeatherEntity):
 
     @property
     def native_temperature(self):
-        return self.coordinator.data["now"]['temperature']
+        return self.coordinator.data["now"]['temp']
 
     @property
     def native_temperature_unit(self):
@@ -161,7 +161,7 @@ class HeweatherEntity(WeatherEntity):
     @property
     def native_visibility(self):
         """能见度"""
-        return self.coordinator.data["now"]['visibility']
+        return self.coordinator.data["now"]['vis']
 
     @property
     def native_pressure(self):
