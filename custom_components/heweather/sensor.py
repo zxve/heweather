@@ -38,6 +38,7 @@ class HeweatherSensor(Entity):
         self._name = name
         self.kind = kind
         self.coordinator = coordinator
+        self.now_data = self.coordinator.data["now"]
         self._device_class = None
         self._attrs = {ATTR_ATTRIBUTION: ATTRIBUTION}
         self._unit_system = "Metric" if self.coordinator.data["is_metric"] == "metric:v2" else "Imperial"
@@ -73,35 +74,35 @@ class HeweatherSensor(Entity):
 
     @property
     def state(self):
-        now_data = self.coordinator.data["now"]
+        _LOGGER.info(self.kind)
         if self.kind == "temperature":
-            return now_data["temp"]
+            return self.now_data["temp"]
         if self.kind == "felt_temperature":
-            return now_data["feelsLike"]
+            return self.now_data["feelsLike"]
         if self.kind == "text":
-            return now_data["text"]
+            return self.now_data["text"]
         if self.kind == "WindDir":
-            return now_data["windDir"]
+            return self.now_data["windDir"]
         if self.kind == "WindDir360":
-            return now_data["WindDir360"]
+            return self.ow_data["wind360"]
         if self.kind == "WindScale":
-            return now_data["WindScale"]
+            return self.now_data["windScale"]
         if self.kind == "WindSpeed":
-            return now_data["WindSpeed"]
+            return self.now_data["WindSpeed"]
         if self.kind == "humidity":
-            return round(float(now_data["humidity"]) * 100)
+            return round(float(self.now_data["humidity"]) * 100)
         if self.kind == "precipitation":
-            return now_data["precip"]
+            return self.now_data["precip"]
         if self.kind == "pressure":
-            return now_data["pressure"]
+            return self.now_data["pressure"]
         if self.kind == "visibility":
-            return now_data["vis"]
+            return self.now_data["vis"]
         if self.kind == "cloudrate":
-            return now_data["cloud"]
+            return self.now_data["cloud"]
         if self.kind == "dew":
-            return now_data["dew"]
+            return self.now_data["dew"]
         if self.kind == "place":
-            return now_data["place"]
+            return self.now_data["place"]
 
     @property
     def icon(self):
