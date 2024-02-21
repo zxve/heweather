@@ -19,7 +19,6 @@ from .const import (
 import voluptuous as vol
 
 _LOGGER = logging.getLogger(__name__)
-_LOGGER.info("zxve 010")
 
 
 @config_entries.HANDLERS.register(DOMAIN)

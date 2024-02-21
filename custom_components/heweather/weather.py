@@ -133,12 +133,12 @@ class HeweatherEntity(WeatherEntity):
 
     @property
     def condition(self):
-        skycon = self.coordinator.data["result"]["realtime"]["skycon"]
+        skycon = self.coordinator.data["text"]
         return CONDITION_MAP[skycon]
 
     @property
     def native_temperature(self):
-        return self.coordinator.data["result"]['realtime']['temperature']
+        return self.coordinator.data['temperature']
 
     @property
     def native_temperature_unit(self):
@@ -146,26 +146,26 @@ class HeweatherEntity(WeatherEntity):
 
     @property
     def humidity(self):
-        return float(self.coordinator.data["result"]['realtime']['humidity']) * 100
+        return self.coordinator.data['humidity']
 
     @property
     def native_wind_speed(self):
         """风速"""
-        return self.coordinator.data["result"]['realtime']['wind']['speed']
+        return self.coordinator.data['windSpeed']
 
     @property
     def wind_bearing(self):
         """风向"""
-        return self.coordinator.data["result"]['realtime']['wind']['direction']
+        return self.coordinator.data['windDir']
 
     @property
     def native_visibility(self):
         """能见度"""
-        return self.coordinator.data["result"]['realtime']['visibility']
+        return self.coordinator.data['visibility']
 
     @property
     def native_pressure(self):
-        return self.coordinator.data["result"]['realtime']['pressure']
+        return self.coordinator.data['pressure']
 
     # @property
     # def pm25(self):
@@ -299,6 +299,6 @@ class HeweatherEntity(WeatherEntity):
         )
 
     async def async_update(self):
-        _LOGGER.debug("weather_update: %s", self.coordinator.data['server_time'])
+        _LOGGER.debug("weather_update: %s", self.coordinator.data['updateTime'])
 
         await self.coordinator.async_request_refresh()
