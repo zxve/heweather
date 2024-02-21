@@ -28,61 +28,68 @@ PARALLEL_UPDATES = 1
 _LOGGER = logging.getLogger(__name__)
 
 CONDITION_MAP = {
-    'CLEAR_DAY': 'sunny',
-    'CLEAR_NIGHT': 'clear-night',
-    'PARTLY_CLOUDY_DAY': 'partlycloudy',
-    'PARTLY_CLOUDY_NIGHT': 'partlycloudy',
-    'CLOUDY': 'cloudy',
-    'LIGHT_HAZE': 'fog',
-    'MODERATE_HAZE': 'fog',
-    'HEAVY_HAZE': 'fog',
-    'LIGHT_RAIN': 'rainy',
-    'MODERATE_RAIN': 'rainy',
-    'HEAVY_RAIN': 'pouring',
-    'STORM_RAIN': 'pouring',
-    'FOG': 'fog',
-    'LIGHT_SNOW': 'snowy',
-    'MODERATE_SNOW': 'snowy',
-    'HEAVY_SNOW': 'snowy',
-    'STORM_SNOW': 'snowy',
-    'DUST': 'fog',
-    'SAND': 'fog',
-    'THUNDER_SHOWER': 'lightning-rainy',
-    'HAIL': 'hail',
-    'SLEET': 'snowy-rainy',
-    'WIND': 'windy',
-    'HAZE': 'fog',
-    'RAIN': 'rainy',
-    'SNOW': 'snowy'
-}
-
-CONDITION_MAP2 = {
-    'CLEAR_DAY': '晴空之日',
-    'CLEAR_NIGHT': '清澈之夜',
-    'PARTLY_CLOUDY_DAY': '云影之日',
-    'PARTLY_CLOUDY_NIGHT': '云掩之夜',
-    'CLOUDY': '云沉之日',
-    'LIGHT_HAZE': '淡雾飘渺',
-    'MODERATE_HAZE': ' 中度雾霾',
-    'HEAVY_HAZE': '重度雾霾',
-    'LIGHT_RAIN': '细雨飘飘',
-    'MODERATE_RAIN': '中雨滂沱',
-    'HEAVY_RAIN': '大雨倾盆',
-    'STORM_RAIN': '暴雨如注',
-    'FOG': '迷蒙之雾',
-    'LIGHT_SNOW': '小雪纷飞',
-    'MODERATE_SNOW': '中雪漫天',
-    'HEAVY_SNOW': '大雪茫茫',
-    'STORM_SNOW': '暴雪肆虐',
-    'DUST': '扬沙飞尘',
-    'SAND': '沙尘暴起',
-    'THUNDER_SHOWER': '雷雨降临',
-    'HAIL': '冰雹落下',
-    'SLEET': '冻雨交加',
-    'WIND': '狂风呼啸',
-    'HAZE': '浓雾笼罩',
-    'RAIN': '阴雨连绵',
-    'SNOW': '白雪皑皑'
+    '100': '晴空之日',  # 白天
+    '101': '云沉之日',  # 白天
+    '102': '云影之日',  # 白天
+    '103': '日光云影',  # 白天
+    '104': '阴云密布',
+    '150': '清澈之夜',  # 晚上
+    '151': '云沉之夜',  # 晚上
+    '152': '云影之日',  # 晚上
+    '153': '星光云隐',  # 晚上
+    '300': '阵雨之日',  # 白天
+    '301': '强阵雨日',  # 白天
+    '302': '雷阵雨',
+    '303': '强雷阵雨',
+    '304': '雷雨冰雹',
+    '305': '细雨飘飘',
+    '306': '中雨滂沱',
+    '307': '大雨倾盆',
+    '308': '暴雨如注',
+    '309': '毛毛雨/细雨',
+    '310': '暴雨',
+    '311': '大暴雨',
+    '312': '特大暴雨',
+    '313': '冻雨交加',
+    '314': '小到中雨',
+    '315': '中到大雨',
+    '316': '大到暴雨',
+    '317': '暴雨到大暴雨',
+    '318': '大暴雨到特大暴雨',
+    '350': '阵雨之夜',  # 晚上
+    '351': '强阵雨夜',  # 晚上
+    '399': '雨',
+    '400': '小雪纷飞',
+    '401': '中雪漫天',
+    '402': '大雪茫茫',
+    '403': '暴雪肆虐	',
+    '404': '雨夹雪',
+    '405': '雨雪天气',
+    '406': '阵雨雪日',  # 白天
+    '407': '阵雪之日',  # 白天
+    '408': '小到中雪',
+    '409': '中到大雪',
+    '410': '大到暴雪',
+    '456': '阵雨雪夜',  # 晚上
+    '457': '阵雪之夜',  # 晚上
+    '499': '雪',
+    '500': '淡雾飘渺',
+    '501': '迷蒙之雾',
+    '502': '霾',
+    '503': '扬沙飞尘',
+    '504': '浮尘',
+    '507': '沙尘暴起',
+    '508': '强沙尘暴',
+    '509': '浓雾',
+    '510': '强浓雾',
+    '511': '中度霾',
+    '512': '重度霾',
+    '513': '严重霾',
+    '514': '大雾',
+    '515': '特强浓雾',
+    '900': '热',
+    '901': '冷',
+    '999': '未知'
 }
 
 
@@ -133,8 +140,8 @@ class HeweatherEntity(WeatherEntity):
 
     @property
     def condition(self):
-        skycon = self.coordinator.data["now"]["text"]
-        return CONDITION_MAP.get(skycon, None)
+        icon = self.coordinator.data["now"]["icon"]
+        return CONDITION_MAP.get(icon, None)
 
     @property
     def native_temperature(self):

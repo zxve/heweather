@@ -79,6 +79,8 @@ class HeweatherSensor(Entity):
             return self.now_data["temp"]
         if self.kind == "felt_temperature":
             return self.now_data["feelsLike"]
+        if self.kind == "icon":
+            return self.now_data["icon"]
         if self.kind == "text":
             return self.now_data["text"]
         if self.kind == "windDir":

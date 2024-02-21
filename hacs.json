@@ -1,8 +1,11 @@
 {
-    "name": "HeFeng Weather by zxve",
-    "content_in_root": false,
-    "render_readme": true,
-    "country": "CN",
-    "homeassistant": "2024.2.2"
-    "domains": ["weather","sensor"],
+  "name": "HeFeng Weather by zxve",
+  "content_in_root": false,
+  "render_readme": true,
+  "country": "CN",
+  "homeassistant": "2024.2.2",
+  "domains": [
+    "weather",
+    "sensor"
+  ]
 }

@@ -65,6 +65,13 @@ SENSOR_TYPES = {
         ATTR_UNIT_METRIC: UnitOfTemperature.CELSIUS,
         ATTR_UNIT_IMPERIAL: UnitOfTemperature.FAHRENHEIT,
     },
+    "icon": {
+        ATTR_DEVICE_CLASS: None,
+        ATTR_ICON: None,
+        ATTR_LABEL: "图标",
+        ATTR_UNIT_METRIC: None,
+        ATTR_UNIT_IMPERIAL: None,
+    },
     "text": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ICON: "mdi:weather-cloudy",

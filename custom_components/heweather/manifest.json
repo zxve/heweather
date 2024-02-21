@@ -5,8 +5,10 @@
   "issue_tracker": "https://github.com/zxve/heweather/issues",
   "dependencies": [],
   "version": "1.0.0",
-  "iot_class": "cloud_polling", 
+  "iot_class": "cloud_polling",
   "config_flow": true,
-  "codeowners": ["@zxve"],
+  "codeowners": [
+    "@zxve"
+  ],
   "requirements": []
 }
