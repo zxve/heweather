@@ -84,7 +84,7 @@ class HeweatherSensor(Entity):
         if self.kind == "WindDir":
             return self.now_data["windDir"]
         if self.kind == "WindDir360":
-            return self.ow_data["wind360"]
+            return self.now_data["wind360"]
         if self.kind == "WindScale":
             return self.now_data["windScale"]
         if self.kind == "WindSpeed":

@@ -96,6 +96,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class HeweatherEntity(WeatherEntity):
     def __init__(self, name, coordinator):
         self.coordinator = coordinator
+        _LOGGER.debug("coordinator111: %s", coordinator.data)
         _LOGGER.debug("coordinator: %s", coordinator.data["obsTime"])
         self._name = name
         self._attrs = {}
