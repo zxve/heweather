@@ -4,8 +4,15 @@ import traceback
 import requests
 import json
 import homeassistant.helpers.config_validation as cv
-from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME
-
+from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME, CONF_SENSORS, CONF_ENTITY_ID, \
+    CONF_ATTRIBUTE, CONF_DEVICE_CLASS, CONF_FRIENDLY_NAME
+from homeassistant.components.binary_sensor import (
+    DEVICE_CLASSES_SCHEMA,
+    ENTITY_ID_FORMAT,
+    PLATFORM_SCHEMA,
+    BinarySensorDeviceClass,
+    BinarySensorEntity,
+)
 from collections import OrderedDict
 from homeassistant import config_entries
 from homeassistant.core import callback
@@ -19,6 +26,18 @@ from .const import (
 import voluptuous as vol
 
 _LOGGER = logging.getLogger(__name__)
+
+SENSOR_SCHEMA = vol.All(
+    vol.Schema(
+        {
+            vol.Required(CONF_ENTITY_ID): cv.entity_id,
+            vol.Optional(CONF_ATTRIBUTE): cv.string,
+            vol.Optional(CONF_DEVICE_CLASS): DEVICE_CLASSES_SCHEMA,
+            vol.Optional(CONF_FRIENDLY_NAME): cv.string,
+        }
+    ),
+    # _validate_min_max,
+)
 
 
 @config_entries.HANDLERS.register(DOMAIN)
@@ -72,9 +91,10 @@ class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             api_version = "v7"
             data_schema = OrderedDict()
             data_schema[vol.Required(CONF_API_KEY)] = str
+            data_schema[vol.Required(CONF_SENSORS)] = cv.schema_with_slug_keys(SENSOR_SCHEMA)
             data_schema[vol.Optional("api_version", default=api_version)] = str
-            data_schema[vol.Optional(CONF_LONGITUDE, default=self.hass.config.longitude)] = cv.longitude
-            data_schema[vol.Optional(CONF_LATITUDE, default=self.hass.config.latitude)] = cv.latitude
+            # data_schema[vol.Optional(CONF_LONGITUDE, default=self.hass.config.longitude)] = cv.longitude
+            # data_schema[vol.Optional(CONF_LATITUDE, default=self.hass.config.latitude)] = cv.latitude
             data_schema[vol.Optional(CONF_NAME, default=self.hass.config.location_name)] = str
             return self.async_show_form(
                 step_id="user", data_schema=vol.Schema(data_schema), errors=self._errors
@@ -102,30 +122,30 @@ class HeweatherOptionsFlow(config_entries.OptionsFlow):
     async def async_step_init(self, user_input=None):
         return await self.async_step_user()
 
-    async def async_step_user(self, user_input=None):
-        if user_input is not None:
-            return self.async_create_entry(title="", data=user_input)
-
-        return self.async_show_form(
-            step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Optional(
-                        CONF_DAILYSTEPS,
-                        default=self.config_entry.options.get(CONF_DAILYSTEPS, 5),
-                    ): vol.All(vol.Coerce(int), vol.Range(min=5, max=15)),
-                    vol.Optional(
-                        CONF_HOURLYSTEPS,
-                        default=self.config_entry.options.get(CONF_HOURLYSTEPS, 24),
-                    ): vol.All(vol.Coerce(int), vol.Range(min=24, max=360)),
-                    vol.Optional(
-                        CONF_STARTTIME,
-                        default=self.config_entry.options.get(CONF_STARTTIME, 0),
-                    ): vol.All(vol.Coerce(int), vol.Range(min=-5, max=0)),
-                    vol.Optional(
-                        CONF_ALERT,
-                        default=self.config_entry.options.get(CONF_ALERT, True),
-                    ): bool
-                }
-            ),
-        )
+    # async def async_step_user(self, user_input=None):
+    #     if user_input is not None:
+    #         return self.async_create_entry(title="", data=user_input)
+    #
+    #     return self.async_show_form(
+    #         step_id="user",
+    #         data_schema=vol.Schema(
+    #             {
+    #                 vol.Optional(
+    #                     CONF_DAILYSTEPS,
+    #                     default=self.config_entry.options.get(CONF_DAILYSTEPS, 5),
+    #                 ): vol.All(vol.Coerce(int), vol.Range(min=5, max=15)),
+    #                 vol.Optional(
+    #                     CONF_HOURLYSTEPS,
+    #                     default=self.config_entry.options.get(CONF_HOURLYSTEPS, 24),
+    #                 ): vol.All(vol.Coerce(int), vol.Range(min=24, max=360)),
+    #                 vol.Optional(
+    #                     CONF_STARTTIME,
+    #                     default=self.config_entry.options.get(CONF_STARTTIME, 0),
+    #                 ): vol.All(vol.Coerce(int), vol.Range(min=-5, max=0)),
+    #                 vol.Optional(
+    #                     CONF_ALERT,
+    #                     default=self.config_entry.options.get(CONF_ALERT, True),
+    #                 ): bool
+    #             }
+    #         ),
+    #     )
