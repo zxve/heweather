@@ -50,8 +50,8 @@ class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
                                  user_input["api_version"],
                                  user_input["longitude"], user_input["latitude"], user_input["api_key"])
                 redata = await self.hass.async_add_executor_job(self.get_data, url)
-                status = redata['status']
-                if status == "ok":
+                status = redata['code']
+                if status == 200:
                     await self.async_set_unique_id(
                         f"{user_input['longitude']}-{user_input['latitude']}".replace(".", "_"))
                     self._abort_if_unique_id_configured()
@@ -66,7 +66,8 @@ class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             return await self._show_config_form(user_input)
         except Exception as e:
             _LOGGER.info(f"zxve 011 {e}")
-            traceback.print_exc()
+            # traceback.print_exc()
+            raise e
 
     async def _show_config_form(self, user_input):
         try:
@@ -82,7 +83,7 @@ class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             )
         except Exception as e:
             _LOGGER.info(f"zxve 012 {e}")
-            traceback.print_exc()
+            raise e
 
     async def async_step_import(self, user_input):
         if self._async_current_entries():

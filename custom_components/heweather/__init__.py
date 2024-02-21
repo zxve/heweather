@@ -34,11 +34,8 @@ PLATFORMS = ["sensor", "weather"]
 
 
 async def async_setup(hass: HomeAssistant, config: Config) -> bool:
-    try:
-        hass.data.setdefault(DOMAIN, {})
-        return True
-    except Exception as e:
-        _LOGGER.info(f"zxve 001 {e}")
+    hass.data.setdefault(DOMAIN, {})
+    return True
 
 
 async def async_setup_entry(hass, config_entry) -> bool:
@@ -63,7 +60,7 @@ async def async_setup_entry(hass, config_entry) -> bool:
         undo_listener = config_entry.add_update_listener(update_listener)
 
         hass.data[DOMAIN][config_entry.entry_id] = {
-            COORDINATOR:  coordinator,
+            COORDINATOR: coordinator,
             UNDO_UPDATE_LISTENER: undo_listener,
         }
 
@@ -75,6 +72,7 @@ async def async_setup_entry(hass, config_entry) -> bool:
         return True
     except Exception as e:
         _LOGGER.info(f"zxve 002 {e}")
+        raise e
 
 
 async def async_unload_entry(hass, config_entry):
