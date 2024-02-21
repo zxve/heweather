@@ -1,6 +1,6 @@
 {
-  "domain": "Heweather",
-  "name": "Heweather",
+  "domain": "heweather",
+  "name": "heweather",
   "documentation": "https://github.com/fineemb/Heweather-weather",
   "issue_tracker": "https://github.com/fineemb/Heweather-weather/issues",
   "dependencies": [],
