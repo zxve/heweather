@@ -35,13 +35,9 @@ NAME = "Heweather"
 
 CONF_API_KEY = "api_key"
 CONF_API_VERSION = "api_version"
+CONF_LOCATION = "location"
 CONF_LATITUDE = "latitude"
 CONF_LONGITUDE = "longitude"
-CONF_ALERT = "alert"
-CONF_HOURLYSTEPS = "hourlysteps"
-CONF_DAILYSTEPS = "dailysteps"
-CONF_STARTTIME = "starttime"
-
 COORDINATOR = "coordinator"
 
 UNDO_UPDATE_LISTENER = "undo_update_listener"

@@ -1,43 +1,17 @@
 import logging
-import traceback
 
 import requests
 import json
-import homeassistant.helpers.config_validation as cv
-from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME, CONF_SENSORS, CONF_ENTITY_ID, \
-    CONF_ATTRIBUTE, CONF_DEVICE_CLASS, CONF_FRIENDLY_NAME
-from homeassistant.components.binary_sensor import (
-    DEVICE_CLASSES_SCHEMA,
-    ENTITY_ID_FORMAT,
-    PLATFORM_SCHEMA,
-    BinarySensorDeviceClass,
-    BinarySensorEntity,
-)
+from homeassistant.const import CONF_API_KEY, CONF_NAME, CONF_SENSORS
 from collections import OrderedDict
 from homeassistant import config_entries
 from homeassistant.core import callback
 from .const import (
     DOMAIN,
-    CONF_HOURLYSTEPS,
-    CONF_DAILYSTEPS,
-    CONF_ALERT,
-    CONF_STARTTIME
 )
 import voluptuous as vol
 
 _LOGGER = logging.getLogger(__name__)
-
-SENSOR_SCHEMA = vol.All(
-    vol.Schema(
-        {
-            vol.Required(CONF_ENTITY_ID): cv.entity_id,
-            vol.Optional(CONF_ATTRIBUTE): cv.string,
-            vol.Optional(CONF_DEVICE_CLASS): DEVICE_CLASSES_SCHEMA,
-            vol.Optional(CONF_FRIENDLY_NAME): cv.string,
-        }
-    ),
-    # _validate_min_max,
-)
 
 
 @config_entries.HANDLERS.register(DOMAIN)
@@ -91,7 +65,7 @@ class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             api_version = "v7"
             data_schema = OrderedDict()
             data_schema[vol.Required(CONF_API_KEY)] = str
-            data_schema[vol.Required(CONF_SENSORS)] = cv.schema_with_slug_keys(SENSOR_SCHEMA)
+            data_schema[vol.Required(CONF_SENSORS)] = str
             data_schema[vol.Optional("api_version", default=api_version)] = str
             # data_schema[vol.Optional(CONF_LONGITUDE, default=self.hass.config.longitude)] = cv.longitude
             # data_schema[vol.Optional(CONF_LATITUDE, default=self.hass.config.latitude)] = cv.latitude

@@ -24,7 +24,7 @@ from .const import (
     CONF_STARTTIME,
     COORDINATOR,
     DOMAIN,
-    UNDO_UPDATE_LISTENER,
+    UNDO_UPDATE_LISTENER, CONF_LOCATION,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -42,16 +42,16 @@ async def async_setup_entry(hass, config_entry) -> bool:
     try:
         api_key = config_entry.data[CONF_API_KEY]
         location_key = config_entry.unique_id
-        longitude = config_entry.data[CONF_LONGITUDE]
-        latitude = config_entry.data[CONF_LATITUDE]
+        location = config_entry.data[CONF_LOCATION]
+        # longitude = config_entry.data[CONF_LONGITUDE]
+        # latitude = config_entry.data[CONF_LATITUDE]
         api_version = config_entry.data[CONF_API_VERSION]
 
         _LOGGER.debug("Using location_key: %s, get forecast: %s", location_key, api_version)
 
         websession = async_get_clientsession(hass)
 
-        coordinator = HeweatherDataUpdateCoordinator(hass, websession, api_key, api_version, location_key, longitude,
-                                                     latitude)
+        coordinator = HeweatherDataUpdateCoordinator(hass, websession, api_key, api_version, location_key, location)
         await coordinator.async_refresh()
 
         if not coordinator.last_update_success:
@@ -97,10 +97,9 @@ async def update_listener(hass, config_entry):
 
 
 class HeweatherDataUpdateCoordinator(DataUpdateCoordinator):
-    def __init__(self, hass, session, api_key, api_version, location_key, longitude, latitude):
+    def __init__(self, hass, session, api_key, api_version, location_key, location):
         self.location_key = location_key
-        self.longitude = longitude
-        self.latitude = latitude
+        self.location = location
         self.api_version = api_version
         self.api_key = api_key
         self.is_metric = "metric:v2"
@@ -123,7 +122,7 @@ class HeweatherDataUpdateCoordinator(DataUpdateCoordinator):
         return resdata
 
     def get_sensor_location(self):
-        lat, lon = self.hass.states.get('sensor.location').state.split(",")
+        lat, lon = self.hass.states.get(self.location).state.split(",")
         lat = lat.strip()[1:]
         lon = lon.strip()[:-1]
         return lat, lon
