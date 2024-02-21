@@ -81,14 +81,14 @@ class HeweatherSensor(Entity):
             return self.now_data["feelsLike"]
         if self.kind == "text":
             return self.now_data["text"]
-        if self.kind == "WindDir":
+        if self.kind == "windDir":
             return self.now_data["windDir"]
-        if self.kind == "WindDir360":
+        if self.kind == "windDir360":
             return self.now_data["wind360"]
-        if self.kind == "WindScale":
+        if self.kind == "windScale":
             return self.now_data["windScale"]
-        if self.kind == "WindSpeed":
-            return self.now_data["WindSpeed"]
+        if self.kind == "windSpeed":
+            return self.now_data["windSpeed"]
         if self.kind == "humidity":
             return round(float(self.now_data["humidity"]) * 100)
         if self.kind == "precipitation":
