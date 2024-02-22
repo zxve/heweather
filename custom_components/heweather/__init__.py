@@ -18,7 +18,7 @@ from .const import (
     CONF_API_VERSION,
     COORDINATOR,
     DOMAIN,
-    UNDO_UPDATE_LISTENER, CONF_LOCATION,
+    UNDO_UPDATE_LISTENER, CONF_LOCATION, CONF_LONGITUDE, CONF_LATITUDE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -36,16 +36,16 @@ async def async_setup_entry(hass, config_entry) -> bool:
     try:
         api_key = config_entry.data[CONF_API_KEY]
         location_key = config_entry.unique_id
-        location = config_entry.data[CONF_LOCATION]
-        # longitude = config_entry.data[CONF_LONGITUDE]
-        # latitude = config_entry.data[CONF_LATITUDE]
+        longitude = config_entry.data[CONF_LONGITUDE]
+        latitude = config_entry.data[CONF_LATITUDE]
         api_version = config_entry.data[CONF_API_VERSION]
 
         _LOGGER.debug("Using location_key: %s, get forecast: %s", location_key, api_version)
 
         websession = async_get_clientsession(hass)
 
-        coordinator = HeweatherDataUpdateCoordinator(hass, websession, api_key, api_version, location_key, location)
+        coordinator = HeweatherDataUpdateCoordinator(hass, websession, api_key, api_version, location_key, longitude,
+                                                     latitude)
         await coordinator.async_refresh()
 
         if not coordinator.last_update_success:
@@ -91,9 +91,10 @@ async def update_listener(hass, config_entry):
 
 
 class HeweatherDataUpdateCoordinator(DataUpdateCoordinator):
-    def __init__(self, hass, session, api_key, api_version, location_key, location):
+    def __init__(self, hass, session, api_key, api_version, location_key, longitude, latitude):
         self.location_key = location_key
-        self.location = location
+        self.longitude = longitude
+        self.latitude = latitude
         self.api_version = api_version
         self.api_key = api_key
         self.is_metric = "metric:v2"
@@ -115,19 +116,11 @@ class HeweatherDataUpdateCoordinator(DataUpdateCoordinator):
         resdata = json.loads(json_text)
         return resdata
 
-    def get_sensor_location(self):
-        # lat, lon = self.hass.states.get('sensor.location').state.split(",")
-        lat, lon = self.hass.states.get(self.location).state.split(",")
-        lat = lat.strip()[1:]
-        lon = lon.strip()[:-1]
-        return lat, lon
-
     async def _async_update_data(self):
         try:
             async with timeout(10):
-                lat, lon = await self.hass.async_add_executor_job(self.get_sensor_location)
                 url = str.format("https://devapi.qweather.com/{}/weather/now?location={},{}&key={}", self.api_version,
-                                 lon, lat, self.api_key)
+                                 self.longitude, self.latitude, self.api_key)
                 # json_text = requests.get(url).content
                 resdata = await self.hass.async_add_executor_job(self.get_data, url)
                 # _LOGGER.info(resdata)

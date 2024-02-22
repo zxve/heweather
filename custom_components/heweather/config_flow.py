@@ -33,6 +33,12 @@ class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         try:
+            # 若location则使用，否则使用user_input的经纬度
+            if user_input["location"]:
+                lat, lon = self.hass.states.get(user_input["location"]).state.split(",")
+                user_input["latitude"] = lat.strip()[1:]
+                user_input["longitude"] = lon.strip()[:-1]
+
             self._errors = {}
             if user_input is not None:
                 existing = await self._check_existing(user_input[CONF_NAME])
