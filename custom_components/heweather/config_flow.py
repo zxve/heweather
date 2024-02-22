@@ -33,14 +33,14 @@ class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def async_step_user(self, user_input=None):
         try:
-            # 若location则使用，否则使用user_input的经纬度
-            if user_input["location"]:
-                lat, lon = self.hass.states.get(user_input["location"]).state.split(",")
-                user_input["latitude"] = lat.strip()[1:]
-                user_input["longitude"] = lon.strip()[:-1]
-
             self._errors = {}
             if user_input is not None:
+                # 若location则使用，否则使用user_input的经纬度
+                if user_input["location"]:
+                    lat, lon = self.hass.states.get(user_input["location"]).state.split(",")
+                    user_input["latitude"] = lat.strip()[1:]
+                    user_input["longitude"] = lon.strip()[:-1]
+
                 existing = await self._check_existing(user_input[CONF_NAME])
                 if existing:
                     return self.async_abort(reason="already_configured")
@@ -103,10 +103,10 @@ class HeweatherOptionsFlow(config_entries.OptionsFlow):
     async def async_step_init(self, user_input=None):
         return await self.async_step_user()
 
-    # async def async_step_user(self, user_input=None):
-    #     if user_input is not None:
-    #         return self.async_create_entry(title="", data=user_input)
-    #
+    async def async_step_user(self, user_input=None):
+        if user_input is not None:
+            return self.async_create_entry(title="", data=user_input)
+
     #     return self.async_show_form(
     #         step_id="user",
     #         data_schema=vol.Schema(
