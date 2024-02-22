@@ -75,28 +75,28 @@ SENSOR_TYPES = {
         ATTR_UNIT_METRIC: None,
         ATTR_UNIT_IMPERIAL: None,
     },
-    "windDir360": {
+    "WindDir360": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ICON: "mdi:weather-windy",
         ATTR_LABEL: "风向360",
         ATTR_UNIT_METRIC: DEGREE,
         ATTR_UNIT_IMPERIAL: DEGREE,
     },
-    "windDir": {
+    "WindDirection": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ICON: "mdi:weather-windy",
         ATTR_LABEL: "风向",
         ATTR_UNIT_METRIC: None,
         ATTR_UNIT_IMPERIAL: None,
     },
-    "windScale": {
+    "WindScale": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ICON: "mdi:weather-windy",
         ATTR_LABEL: "风力等级",
         ATTR_UNIT_METRIC: None,
         ATTR_UNIT_IMPERIAL: None,
     },
-    "windSpeed": {
+    "WindSpeed": {
         ATTR_DEVICE_CLASS: None,
         ATTR_ICON: "mdi:weather-windy",
         ATTR_LABEL: "风速",

@@ -28,7 +28,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     sensors = []
     for sensor in SENSOR_TYPES:
-        sensors.append(HeweatherSensor(name, sensor, coordinator))
+        sensors.append(HfweatherSensor(name, sensor, coordinator))
 
     async_add_entities(sensors, False)
 
