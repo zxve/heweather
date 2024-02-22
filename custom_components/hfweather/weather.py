@@ -160,10 +160,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     name = config_entry.data[CONF_NAME]
     coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
     _LOGGER.debug("metric: %s", coordinator.data["is_metric"])
-    async_add_entities([HeweatherEntity(name, coordinator)], False)
+    async_add_entities([HfweatherEntity(name, coordinator)], False)
 
 
-class HeweatherEntity(WeatherEntity):
+class HfweatherEntity(WeatherEntity):
     def __init__(self, name, coordinator):
         self.coordinator = coordinator
         _LOGGER.debug("coordinator: %s", coordinator.data["updateTime"])
@@ -315,7 +315,7 @@ class HeweatherEntity(WeatherEntity):
 
     # @property
     # def state_attributes(self):
-    #     data = super(HeweatherEntity, self).state_attributes
+    #     data = super(HfweatherEntity, self).state_attributes
     #     data['forecast_hourly'] = self.forecast_hourly
     #     data['forecast_minutely'] = self.forecast_minutely
     #     data['forecast_probability'] = self.forecast_minutely_probability

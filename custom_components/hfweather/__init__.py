@@ -44,7 +44,7 @@ async def async_setup_entry(hass, config_entry) -> bool:
 
         websession = async_get_clientsession(hass)
 
-        coordinator = HeweatherDataUpdateCoordinator(hass, websession, api_key, api_version, location_key, longitude,
+        coordinator = HfweatherDataUpdateCoordinator(hass, websession, api_key, api_version, location_key, longitude,
                                                      latitude)
         await coordinator.async_refresh()
 
@@ -90,7 +90,7 @@ async def update_listener(hass, config_entry):
     await hass.config_entries.async_reload(config_entry.entry_id)
 
 
-class HeweatherDataUpdateCoordinator(DataUpdateCoordinator):
+class HfweatherDataUpdateCoordinator(DataUpdateCoordinator):
     def __init__(self, hass, session, api_key, api_version, location_key, longitude, latitude):
         self.location_key = location_key
         self.longitude = longitude

@@ -6,7 +6,7 @@ from homeassistant.const import (
     DEGREE, UnitOfSpeed
 )
 
-DOMAIN = "heweather"
+DOMAIN = "hfweather"
 
 PLATFORMS = ["sensor"]
 REQUIRED_FILES = [
@@ -24,14 +24,14 @@ STARTUP = """
 
 """
 
-ATTRIBUTION = "Data provided by zxve"
+ATTRIBUTION = "Data provided by 和风天气"
 ATTR_ICON = "icon"
 ATTR_FORECAST = CONF_DAILYSTEPS = "forecast"
 ATTR_LABEL = "label"
 ATTR_UNIT_IMPERIAL = "Imperial"
 ATTR_UNIT_METRIC = "Metric"
-MANUFACTURER = "Heweather, Inc."
-NAME = "Heweather"
+MANUFACTURER = "Hfweather, Inc."
+NAME = "Hfweather"
 
 CONF_API_KEY = "api_key"
 CONF_API_VERSION = "api_version"

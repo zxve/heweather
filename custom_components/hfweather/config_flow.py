@@ -16,11 +16,11 @@ _LOGGER = logging.getLogger(__name__)
 
 
 @config_entries.HANDLERS.register(DOMAIN)
-class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
+class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
-        return HeweatherOptionsFlow(config_entry)
+        return HfweatherOptionsFlow(config_entry)
 
     def __init__(self):
         self._errors = {}
@@ -36,7 +36,7 @@ class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             self._errors = {}
             if user_input is not None:
                 # 若location则使用，否则使用user_input的经纬度
-                if user_input["location"]:
+                if user_input["location"] != 'None':
                     lat, lon = self.hass.states.get(user_input["location"]).state.split(",")
                     user_input["latitude"] = lat.strip()[1:]
                     user_input["longitude"] = lon.strip()[:-1]
@@ -95,7 +95,7 @@ class HeweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 return True
 
 
-class HeweatherOptionsFlow(config_entries.OptionsFlow):
+class HfweatherOptionsFlow(config_entries.OptionsFlow):
 
     def __init__(self, config_entry):
         self.config_entry = config_entry

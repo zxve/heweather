@@ -33,7 +33,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(sensors, False)
 
 
-class HeweatherSensor(Entity):
+class HfweatherSensor(Entity):
     def __init__(self, name, kind, coordinator, forecast_day=None):
         self._name = name
         self.kind = kind

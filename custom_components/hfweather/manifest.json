@@ -1,0 +1,14 @@
+{
+  "domain": "hfweather",
+  "name": "hfweather",
+  "documentation": "https://github.com/zxve/hfweather",
+  "issue_tracker": "https://github.com/zxve/hfweather/issues",
+  "dependencies": [],
+  "version": "1.0.0",
+  "iot_class": "cloud_polling",
+  "config_flow": true,
+  "codeowners": [
+    "@zxve"
+  ],
+  "requirements": []
+}

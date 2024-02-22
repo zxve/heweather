@@ -4,7 +4,7 @@
     "step": {
       "user": {
         "title": "和风天气",
-        "description": "如果您需要配置方面的帮助，请查看此处: https://github.com/zxve/heweather",
+        "description": "如果您需要配置方面的帮助，请查看此处: https://github.com/zxve/hfweather",
         "data": {
           "api_key": "和风API Key",
           "location": "手机定位sensor对象名称",
