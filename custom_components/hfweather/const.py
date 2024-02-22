@@ -6,7 +6,7 @@ from homeassistant.const import (
     DEGREE, UnitOfSpeed
 )
 
-# 方便直接使用Home Assistant Brands上面的和风天气图标, 在manifest.json中修改domain
+# 方便直接使用Home Assistant Brands上面的和风天气图标, 在这里和manifest.json中修改domain为heweather
 DOMAIN = "heweather"
 
 PLATFORMS = ["sensor"]
