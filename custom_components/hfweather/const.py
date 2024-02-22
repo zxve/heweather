@@ -6,7 +6,8 @@ from homeassistant.const import (
     DEGREE, UnitOfSpeed
 )
 
-DOMAIN = "hfweather"
+# 方便直接使用Home Assistant Brands上面的和风天气图标
+DOMAIN = "heweather"
 
 PLATFORMS = ["sensor"]
 REQUIRED_FILES = [
