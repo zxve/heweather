@@ -16,7 +16,7 @@ REQUIRED_FILES = [
     "weather.py",
     "config_flow.py",
     "services.yaml",
-    "translations/en.json",
+    "translations/zh-Hans.json",
 ]
 VERSION = "0.1.0"
 ISSUE_URL = ""
