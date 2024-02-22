@@ -7,7 +7,7 @@ from homeassistant.const import (
 )
 
 # 方便直接使用Home Assistant Brands上面的和风天气图标
-DOMAIN = "hfweather"
+DOMAIN = "heweather"
 
 PLATFORMS = ["sensor"]
 REQUIRED_FILES = [
