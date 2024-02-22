@@ -83,13 +83,13 @@ class HfweatherSensor(Entity):
             return self.now_data["icon"]
         if self.kind == "text":
             return self.now_data["text"]
-        if self.kind == "windDir":
+        if self.kind == "WindDirection":
             return self.now_data["windDir"]
-        if self.kind == "windDir360":
+        if self.kind == "WindDir360":
             return self.now_data["wind360"]
-        if self.kind == "windScale":
+        if self.kind == "WindScale":
             return self.now_data["windScale"]
-        if self.kind == "windSpeed":
+        if self.kind == "WindSpeed":
             return self.now_data["windSpeed"]
         if self.kind == "humidity":
             return float(self.now_data["humidity"])
