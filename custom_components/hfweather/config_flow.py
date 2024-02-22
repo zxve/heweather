@@ -8,7 +8,7 @@ from collections import OrderedDict
 from homeassistant import config_entries
 from homeassistant.core import callback
 from .const import (
-    DOMAIN, NAME
+    DOMAIN, NAME, CONF_ALERT
 )
 import voluptuous as vol
 
@@ -112,9 +112,9 @@ class HfweatherOptionsFlow(config_entries.OptionsFlow):
             data_schema=vol.Schema(
                 {
                     vol.Optional(
-                        CONF_API_KEY,
-                        default=self.config_entry.options.get(CONF_API_KEY, None),
-                    ): vol.All(vol.Coerce(int), vol.Range(min=5, max=15)),
+                        CONF_ALERT,
+                        default=self.config_entry.options.get(CONF_ALERT, True),
+                    ): bool,
                 }
             ),
         )

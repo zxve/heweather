@@ -40,6 +40,7 @@ CONF_LOCATION = "location"
 CONF_LATITUDE = "latitude"
 CONF_LONGITUDE = "longitude"
 COORDINATOR = "coordinator"
+CONF_ALERT = "alert"
 
 UNDO_UPDATE_LISTENER = "undo_update_listener"
 
