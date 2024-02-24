@@ -41,7 +41,7 @@ from .const import (
     DOMAIN,
     SENSOR_TYPES, ATTR_UPDATE_TIME, OPTIONS, DISASTER_LEVEL, CONF_LOCATION, CONF_API_KEY, CONF_DISASTER_MSG,
     CONF_DISASTER_LEVEL, WEATHER_TIME_BETWEEN_UPDATES, LIFE_SUGGESTION_TIME_BETWEEN_UPDATES, CONF_LATITUDE,
-    CONF_LONGITUDE, MANUFACTURER,
+    CONF_LONGITUDE, MANUFACTURER, ATTR_LABEL,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -104,7 +104,10 @@ class HfweatherSensor(Entity):
     @property
     def name(self):
         """返回实体的名字."""
-        return self._name
+        """Return the name."""
+        if self.forecast_day is not None:
+            return f"{self._name} {FORECAST_SENSOR_TYPES[self.kind][ATTR_LABEL]} {self.forecast_day}d"
+        return f"{self._name} {SENSOR_TYPES[self.kind][ATTR_LABEL]}"
 
     @property
     def attribution(self):
@@ -134,7 +137,30 @@ class HfweatherSensor(Entity):
     @property
     def state(self):
         """返回当前的状态."""
-        return self._state
+        if self.kind == "apparent_temperature":
+            return self.coordinator.data["result"]["realtime"][self.kind]
+        if self.kind == "pressure":
+            return self.coordinator.data["result"]["realtime"][self.kind]
+        if self.kind == "temperature":
+            return self.coordinator.data["result"]["realtime"][self.kind]
+        if self.kind == "humidity":
+            return round(float(self.coordinator.data["result"]["realtime"][self.kind]) * 100)
+        if self.kind == "cloudrate":
+            return self.coordinator.data["result"]["realtime"][self.kind]
+        if self.kind == "visibility":
+            return self.coordinator.data["result"]["realtime"][self.kind]
+        if self.kind == "WindSpeed":
+            return self.coordinator.data["result"]["realtime"]["wind"]["speed"]
+        if self.kind == "WindDirection":
+            return self.coordinator.data["result"]["realtime"]["wind"]["direction"]
+        if self.kind == "comfort":
+            return self.coordinator.data["result"]["realtime"]["life_index"]["comfort"]["index"]
+        if self.kind == "ultraviolet":
+            return self.coordinator.data["result"]["realtime"]["life_index"]["ultraviolet"]["index"]
+        if self.kind == "precipitation":
+            return self.coordinator.data["result"]["realtime"]["precipitation"]["local"]["intensity"]
+        if self.kind == "city":
+            return self.coordinator.data["city"]
 
     @property
     def icon(self):

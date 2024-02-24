@@ -179,11 +179,9 @@ class HfweatherEntity(WeatherEntity):
         self._dew = None
         self._feelslike = None
         self._cloud = None
-
         self._data = data
         self._updatetime = None
         self._attr_unique_id = 'localweather_' + location
-
         self._attr_supported_features = 0
         self._attr_supported_features = WeatherEntityFeature.FORECAST_DAILY
         self._attr_supported_features |= WeatherEntityFeature.FORECAST_HOURLY
@@ -363,7 +361,7 @@ class HfweatherEntity(WeatherEntity):
         _LOGGER.info("success to update informations")
 
 
-class WeatherData():
+class WeatherData:
     """天气相关的数据，存储在这个类中."""
 
     def __init__(self, hass, longitude, latitude, key):
