@@ -29,6 +29,7 @@ import aiohttp
 # aiohttp_client将aiohttp的session与hass关联起来
 # track_time_interval需要使用对应的异步的版本
 import homeassistant.util.dt as dt_util
+from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.helpers.entity import Entity
 from homeassistant.const import CONF_NAME, ATTR_ATTRIBUTION
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -40,7 +41,7 @@ from .const import (
     DOMAIN,
     SENSOR_TYPES, ATTR_UPDATE_TIME, OPTIONS, DISASTER_LEVEL, CONF_LOCATION, CONF_API_KEY, CONF_DISASTER_MSG,
     CONF_DISASTER_LEVEL, WEATHER_TIME_BETWEEN_UPDATES, LIFE_SUGGESTION_TIME_BETWEEN_UPDATES, CONF_LATITUDE,
-    CONF_LONGITUDE,
+    CONF_LONGITUDE, MANUFACTURER,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -104,6 +105,26 @@ class HfweatherSensor(Entity):
     def name(self):
         """返回实体的名字."""
         return self._name
+
+    @property
+    def attribution(self):
+        """Return the attribution."""
+        return ATTRIBUTION
+
+    @property
+    def unique_id(self):
+        """Return a unique_id for this entity."""
+        return self._attr_unique_id
+
+    @property
+    def device_info(self):
+        """Return the device info."""
+        return {
+            "identifiers": {(DOMAIN, self._attr_unique_id)},
+            "name": self._name,
+            "manufacturer": MANUFACTURER,
+            "entry_type": DeviceEntryType.SERVICE
+        }
 
     # @property
     # def registry_name(self):

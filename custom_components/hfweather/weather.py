@@ -195,6 +195,26 @@ class HfweatherEntity(WeatherEntity):
         return self._name
 
     @property
+    def attribution(self):
+        """Return the attribution."""
+        return ATTRIBUTION
+
+    @property
+    def unique_id(self):
+        """Return a unique_id for this entity."""
+        return self._attr_unique_id
+
+    @property
+    def device_info(self):
+        """Return the device info."""
+        return {
+            "identifiers": {(DOMAIN, self._attr_unique_id)},
+            "name": self._name,
+            "manufacturer": MANUFACTURER,
+            "entry_type": DeviceEntryType.SERVICE
+        }
+
+    @property
     def should_poll(self):
         """attention No polling needed for a demo weather condition."""
         return True

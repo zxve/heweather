@@ -76,8 +76,8 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema[vol.Optional("api_version", default=api_version)] = str
             data_schema[vol.Optional(CONF_LONGITUDE, default=self.hass.config.longitude)] = cv.longitude
             data_schema[vol.Optional(CONF_LATITUDE, default=self.hass.config.latitude)] = cv.latitude
-            data_schema[vol.Optional(CONF_DISASTER_LEVEL, default="")] = str
-            data_schema[vol.Optional(CONF_DISASTER_MSG, default="")] = str
+            data_schema[vol.Optional(CONF_DISASTER_LEVEL, default=1)] = str
+            data_schema[vol.Optional(CONF_DISASTER_MSG, default="注意")] = str
 
             data_schema[vol.Optional(CONF_NAME, default=NAME)] = str
             return self.async_show_form(
