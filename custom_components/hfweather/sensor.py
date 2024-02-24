@@ -48,7 +48,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     try:
-        location = config_entry.get(CONF_LOCATION)
+        location = config_entry.data[CONF_LOCATION]
         api_key = config_entry.data[CONF_API_KEY]
         longitude = config_entry.data[CONF_LONGITUDE]
         latitude = config_entry.data[CONF_LATITUDE]
