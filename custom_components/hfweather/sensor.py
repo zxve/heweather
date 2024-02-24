@@ -26,8 +26,6 @@ import asyncio
 import async_timeout
 import aiohttp
 
-# aiohttp_client将aiohttp的session与hass关联起来
-# track_time_interval需要使用对应的异步的版本
 import homeassistant.util.dt as dt_util
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.helpers.entity import Entity
@@ -81,7 +79,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class HfweatherSensor(Entity):
     """定义一个温度传感器的类，继承自HomeAssistant的Entity类."""
 
-    def __init__(self, weather_data, suggestion_data, option, location):
+    def __init__(self, weather_data, suggestion_data, option, location, forecast_day=None):
         """初始化."""
         self._weather_data = weather_data
         self._suggestion_data = suggestion_data
@@ -89,7 +87,7 @@ class HfweatherSensor(Entity):
         self._name = OPTIONS[option][1]
         self._icon = OPTIONS[option][2]
         self._unit_of_measurement = OPTIONS[option][3]
-
+        self.forecast_day = forecast_day
         self._type = option
         self._state = None
         self._attributes = {"states": "null"}
