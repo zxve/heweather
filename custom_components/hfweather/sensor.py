@@ -134,7 +134,7 @@ class HfweatherSensor(Entity):
 
     @property
     def state(self):
-        return getattr(self._weather_data, self._type)
+        return getattr(self._weather_data, self._type) if self._type in dir(self._weather_data) else None
 
     @property
     def icon(self):
