@@ -239,16 +239,17 @@ class HfweatherEntity(WeatherEntity):
         reftime = datetime.now()
 
         forecast_data = []
-        for entry in self._forecast:
-            data_dict = {
-                ATTR_FORECAST_TIME: reftime.isoformat(),
-                ATTR_FORECAST_CONDITION: entry[0],
-                ATTR_FORECAST_NATIVE_TEMP: entry[1],
-                ATTR_FORECAST_NATIVE_TEMP_LOW: entry[2],
-                'text': entry[3]
-            }
-            reftime = reftime + timedelta(days=1)
-            forecast_data.append(data_dict)
+        if self._forecast:
+            for entry in self._forecast:
+                data_dict = {
+                    ATTR_FORECAST_TIME: reftime.isoformat(),
+                    ATTR_FORECAST_CONDITION: entry[0],
+                    ATTR_FORECAST_NATIVE_TEMP: entry[1],
+                    ATTR_FORECAST_NATIVE_TEMP_LOW: entry[2],
+                    'text': entry[3]
+                }
+                reftime = reftime + timedelta(days=1)
+                forecast_data.append(data_dict)
 
         return forecast_data
 
