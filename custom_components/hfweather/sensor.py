@@ -53,8 +53,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         longitude = config_entry.data[CONF_LONGITUDE]
         latitude = config_entry.data[CONF_LATITUDE]
 
-        disaster_msg = config_entry.get(CONF_DISASTER_MSG)
-        disaster_level = config_entry.get(CONF_DISASTER_LEVEL)
+        disaster_msg = config_entry.data(CONF_DISASTER_MSG)
+        disaster_level = config_entry.data(CONF_DISASTER_LEVEL)
         _LOGGER.info(f"010 {config_entry.data}")
 
         # 这里通过 data 实例化class weatherdata，并传入调用API所需信息

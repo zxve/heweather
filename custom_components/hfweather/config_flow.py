@@ -8,7 +8,7 @@ from collections import OrderedDict
 from homeassistant import config_entries
 from homeassistant.core import callback
 from .const import (
-    DOMAIN, NAME, CONF_ALERT
+    DOMAIN, NAME, CONF_ALERT, CONF_DISASTER_LEVEL, CONF_DISASTER_MSG
 )
 import voluptuous as vol
 
@@ -76,6 +76,9 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema[vol.Optional("api_version", default=api_version)] = str
             data_schema[vol.Optional(CONF_LONGITUDE, default=self.hass.config.longitude)] = cv.longitude
             data_schema[vol.Optional(CONF_LATITUDE, default=self.hass.config.latitude)] = cv.latitude
+            data_schema[vol.Optional(CONF_DISASTER_LEVEL, default="")] = str
+            data_schema[vol.Optional(CONF_DISASTER_MSG, default="")] = str
+
             data_schema[vol.Optional(CONF_NAME, default=NAME)] = str
             return self.async_show_form(
                 step_id="user", data_schema=vol.Schema(data_schema), errors=self._errors

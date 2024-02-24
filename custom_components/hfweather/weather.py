@@ -108,7 +108,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         _LOGGER.info(f"000 {config_entry.data}")
 
         data = WeatherData(hass, longitude, latitude, api_key)
-        _LOGGER.info(f"001 {data.data}")
+        _LOGGER.info(f"001 {data}")
 
         async_add_entities([HfweatherEntity(name, data, location)], False)
     except Exception as e:
