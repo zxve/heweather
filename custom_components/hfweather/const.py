@@ -82,7 +82,6 @@ HOURLY_TIME_BETWEEN_UPDATES = timedelta(minutes=60)
 DEFAULT_TIME = dt_util.now()
 CONF_OPTIONS = "options"
 CONF_LOCATION = "location"
-CONF_KEY = "key"
 CONF_DISASTER_LEVEL = "disaster_level"
 CONF_DISASTER_MSG = "disaster_msg"
 

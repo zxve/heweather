@@ -3,6 +3,8 @@ from datetime import timedelta, datetime
 import asyncio
 import async_timeout
 import aiohttp
+import homeassistant.util.dt as dt_util
+
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.components.weather import (
     WeatherEntity,
@@ -22,11 +24,14 @@ from homeassistant.const import (
     TEMP_FAHRENHEIT,
     CONF_NAME, PRECIPITATION_MILLIMETERS_PER_HOUR, PRESSURE_HPA, SPEED_KILOMETERS_PER_HOUR, LENGTH_KILOMETERS
 )
+from homeassistant.helpers.event import async_track_time_interval
+
 from .const import (
     ATTRIBUTION,
     COORDINATOR,
     DOMAIN,
-    MANUFACTURER, CONDITION_CLASSES, DEFAULT_TIME, CONF_LOCATION, CONF_KEY, CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE
+    MANUFACTURER, CONDITION_CLASSES, DEFAULT_TIME, CONF_LOCATION, CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE,
+    TIME_BETWEEN_UPDATES
 )
 
 PARALLEL_UPDATES = 1
@@ -40,10 +45,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         api_key = config_entry.data[CONF_API_KEY]
         longitude = config_entry.data[CONF_LONGITUDE]
         latitude = config_entry.data[CONF_LATITUDE]
-        _LOGGER.info(f"000 {config_entry.data}")
 
         data = WeatherData(hass, longitude, latitude, api_key)
-        _LOGGER.info(f"001 {data}")
+        await data.async_update(dt_util.now())
+        async_track_time_interval(hass, data.async_update, TIME_BETWEEN_UPDATES)
 
         async_add_entities([HfweatherEntity(name, data, location)], False)
     except Exception as e:
@@ -150,7 +155,7 @@ class HfweatherEntity(WeatherEntity):
     @property
     def should_poll(self):
         """attention No polling needed for a demo weather condition."""
-        return True
+        return False
 
     @property
     def native_dew_point(self):
@@ -229,7 +234,6 @@ class HfweatherEntity(WeatherEntity):
     #                ATTR_ATTRIBUTION: ATTRIBUTION,
     #                ATTR_UPDATE_TIME: self._updatetime
     #            }
-    @property
     async def async_forecast_daily(self) -> list[Forecast]:
         """Return the daily forecast."""
         reftime = datetime.now()
@@ -248,7 +252,6 @@ class HfweatherEntity(WeatherEntity):
 
         return forecast_data
 
-    @property
     async def async_forecast_hourly(self) -> list[Forecast]:
         """Return the daily forecast."""
         reftime = datetime.now()
