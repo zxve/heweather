@@ -105,7 +105,7 @@ class HfweatherSensor(Entity):
         """Return the name."""
         if self.forecast_day is not None:
             return f"{self._name} {FORECAST_SENSOR_TYPES[self.kind][ATTR_LABEL]} {self.forecast_day}d"
-        return f"{self._name} {SENSOR_TYPES[self.kind][ATTR_LABEL]}"
+        return f"{self._name} {OPTIONS[self._type][1]}"
 
     @property
     def attribution(self):
