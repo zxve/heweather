@@ -136,31 +136,7 @@ class HfweatherSensor(Entity):
 
     @property
     def state(self):
-        """返回当前的状态."""
-        if self.kind == "apparent_temperature":
-            return self.coordinator.data["result"]["realtime"][self.kind]
-        if self.kind == "pressure":
-            return self.coordinator.data["result"]["realtime"][self.kind]
-        if self.kind == "temperature":
-            return self.coordinator.data["result"]["realtime"][self.kind]
-        if self.kind == "humidity":
-            return round(float(self.coordinator.data["result"]["realtime"][self.kind]) * 100)
-        if self.kind == "cloudrate":
-            return self.coordinator.data["result"]["realtime"][self.kind]
-        if self.kind == "visibility":
-            return self.coordinator.data["result"]["realtime"][self.kind]
-        if self.kind == "WindSpeed":
-            return self.coordinator.data["result"]["realtime"]["wind"]["speed"]
-        if self.kind == "WindDirection":
-            return self.coordinator.data["result"]["realtime"]["wind"]["direction"]
-        if self.kind == "comfort":
-            return self.coordinator.data["result"]["realtime"]["life_index"]["comfort"]["index"]
-        if self.kind == "ultraviolet":
-            return self.coordinator.data["result"]["realtime"]["life_index"]["ultraviolet"]["index"]
-        if self.kind == "precipitation":
-            return self.coordinator.data["result"]["realtime"]["precipitation"]["local"]["intensity"]
-        if self.kind == "city":
-            return self.coordinator.data["city"]
+        return getattr(self._weather_data, self._type)
 
     @property
     def icon(self):
@@ -287,6 +263,7 @@ class WeatherSensorData(object):
 
     def __init__(self, hass, longitude, latitude, key, disaster_msg, disaster_level):
         """初始化函数."""
+        self._place = None
         self._hass = hass
         self._disaster_msg = disaster_msg
         self._disaster_level = disaster_level
@@ -297,7 +274,6 @@ class WeatherSensorData(object):
         self._params = {"location": f"{longitude}/{latitude}", "key": key, }
         self._temperature = None
         self._humidity = None
-
         self._feelsLike = None
         self._text = None
         self._windDir = None
@@ -309,12 +285,10 @@ class WeatherSensorData(object):
         self._cloud = None
         self._dew = None
         self._updatetime = None
-
         self._category = None
         self._pm10 = None
         self._primary = None
         self._level = None
-
         self._pm25 = None
         self._no2 = None
         self._so2 = None
@@ -324,9 +298,9 @@ class WeatherSensorData(object):
         self._disaster_warn = None
 
     @property
-    def temprature(self):
+    def temperature(self):
         """温度."""
-        return self._temprature
+        return self._temperature
 
     @property
     def humidity(self):
@@ -399,6 +373,11 @@ class WeatherSensorData(object):
         return self._dew
 
     @property
+    def place(self):
+        """位置，拼音表示的"""
+        return self._place
+
+    @property
     def pm25(self):
         """pm2.5"""
         return self._pm25
@@ -457,6 +436,7 @@ class WeatherSensorData(object):
                 async with session.get(self._weather_now_url) as response:
                     json_data = await response.json()
                     weather = json_data["now"]
+                    self._place = json_data["fxLink"].split("/")[-1].split("-")[0]
                 async with session.get(self._air_now_url) as response:
                     json_data = await response.json()
                     air = json_data["now"]
@@ -468,7 +448,7 @@ class WeatherSensorData(object):
             return
 
         # 根据http返回的结果，更新数据
-        self._temprature = weather["temp"]
+        self._temperature = weather["temp"]
         self._humidity = weather["humidity"]
         self._feelsLike = weather["feelsLike"]
         self._text = weather["text"]
