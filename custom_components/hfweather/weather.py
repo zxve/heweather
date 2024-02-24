@@ -294,7 +294,7 @@ class HfweatherEntity(WeatherEntity):
     #                ATTR_ATTRIBUTION: ATTRIBUTION,
     #                ATTR_UPDATE_TIME: self._updatetime
     #            }
-
+    @property
     async def async_forecast_daily(self) -> list[Forecast]:
         """Return the daily forecast."""
         reftime = datetime.now()
@@ -313,6 +313,7 @@ class HfweatherEntity(WeatherEntity):
 
         return forecast_data
 
+    @property
     async def async_forecast_hourly(self) -> list[Forecast]:
         """Return the daily forecast."""
         reftime = datetime.now()
@@ -385,7 +386,6 @@ class WeatherData:
         self._dew = None
         self._feelslike = None
         self._cloud = None
-
         self._forecast = None
         self._forecast_hourly = None
         self._updatetime = None

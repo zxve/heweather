@@ -159,7 +159,6 @@ class HfweatherSensor(Entity):
     async def async_update(self):
         """update函数变成了async_update."""
         self._updatetime = self._weather_data.updatetime
-
         if self._type == "temprature":
             self._state = self._weather_data.temprature
         elif self._type == "humidity":
