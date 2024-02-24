@@ -55,9 +55,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         disaster_msg = config_entry.get(CONF_DISASTER_MSG)
         disaster_level = config_entry.get(CONF_DISASTER_LEVEL)
+        _LOGGER.info(f"010 {config_entry.data}")
+
         # 这里通过 data 实例化class weatherdata，并传入调用API所需信息
         weather_data = WeatherSensorData(hass, longitude, latitude, api_key, disaster_msg, disaster_level)
         suggestion_data = SuggestionData(hass, longitude, latitude, api_key)
+        _LOGGER.info(f"011 {weather_data}")
+        _LOGGER.info(f"012 {suggestion_data}")
 
         await weather_data.async_update(dt_util.now())
         async_track_time_interval(hass, weather_data.async_update, WEATHER_TIME_BETWEEN_UPDATES)

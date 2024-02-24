@@ -96,70 +96,6 @@ CONDITION_MAP_CN = {
     '901': '冷',
     '999': '未知'
 }
-CONDITION_MAP = {
-    '100': 'sunny',  # 白天
-    '101': 'partlycloudy',  # 白天
-    '102': 'partlycloudy',  # 白天
-    '103': 'partlycloudy',  # 白天
-    '104': 'cloudy',
-    '150': 'clear-night',  # 晚上
-    '151': 'partlycloudy',  # 晚上
-    '152': 'partlycloudy',  # 晚上
-    '153': 'partlycloudy',  # 晚上
-    '300': 'rainy',  # 白天
-    '301': 'rainy',  # 白天
-    '302': 'lightning-rainy',
-    '303': 'lightning-rainy',
-    '304': 'hail',
-    '305': 'rainy',
-    '306': 'rainy',
-    '307': 'pouring',
-    '308': 'pouring',
-    '309': 'rainy',
-    '310': 'pouring',
-    '311': 'pouring',
-    '312': 'pouring',
-    '313': 'rainy',
-    '314': 'rainy',
-    '315': 'pouring',
-    '316': 'pouring',
-    '317': 'pouring',
-    '318': 'pouring',
-    '350': 'rainy',  # 晚上
-    '351': 'rainy',  # 晚上
-    '399': 'rainy',
-    '400': 'snowy',
-    '401': 'snowy',
-    '402': 'snowy',
-    '403': 'snowy	',
-    '404': 'snowy-rainy',
-    '405': 'snowy-rainy',
-    '406': 'snowy',  # 白天
-    '407': 'snowy',  # 白天
-    '408': 'snowy',
-    '409': 'snowy',
-    '410': 'snowy',
-    '456': 'snowy',  # 晚上
-    '457': 'snowy',  # 晚上
-    '499': 'snowy',
-    '500': 'fog',
-    '501': 'fog',
-    '502': 'fog',
-    '503': 'fog',
-    '504': 'fog',
-    '507': 'fog',
-    '508': 'fog',
-    '509': 'fog',
-    '510': 'fog',
-    '511': 'fog',
-    '512': 'fog',
-    '513': 'fog',
-    '514': 'fog',
-    '515': 'fog',
-    '900': 'sunny',
-    '901': 'cloudy',
-    '999': '未知'
-}
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -169,7 +105,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         api_key = config_entry.data[CONF_API_KEY]
         longitude = config_entry.data[CONF_LONGITUDE]
         latitude = config_entry.data[CONF_LATITUDE]
+        _LOGGER.info(f"000 {config_entry.data}")
+
         data = WeatherData(hass, longitude, latitude, api_key)
+        _LOGGER.info(f"001 {data}")
 
         async_add_entities([HfweatherEntity(name, data, location)], False)
     except Exception as e:

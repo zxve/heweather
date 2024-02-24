@@ -22,6 +22,8 @@ from .const import (
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+
 # _LOGGER.info("zxve 000")
 
 
@@ -30,7 +32,15 @@ async def async_setup(hass: HomeAssistant, config: Config) -> bool:
     return True
 
 
-# async def async_setup_entry(hass, config_entry) -> bool:
+async def async_setup_entry(hass, config_entry) -> bool:
+    for component in PLATFORMS:
+        hass.async_create_task(
+            hass.config_entries.async_forward_entry_setup(config_entry, component)
+        )
+
+    return True
+
+
 #     try:
 #         api_key = config_entry.data[CONF_API_KEY]
 #         location_key = config_entry.unique_id
@@ -66,27 +76,26 @@ async def async_setup(hass: HomeAssistant, config: Config) -> bool:
 #         raise e
 
 
-async def async_unload_entry(hass, config_entry):
-    unload_ok = all(
-        await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_unload(config_entry, component)
-                for component in PLATFORMS
-            ]
-        )
-    )
-
-    hass.data[DOMAIN][config_entry.entry_id][UNDO_UPDATE_LISTENER]()
-
-    if unload_ok:
-        hass.data[DOMAIN].pop(config_entry.entry_id)
-
-    return unload_ok
+# async def async_unload_entry(hass, config_entry):
+#     unload_ok = all(
+#         await asyncio.gather(
+#             *[
+#                 hass.config_entries.async_forward_entry_unload(config_entry, component)
+#                 for component in PLATFORMS
+#             ]
+#         )
+#     )
+#
+#     hass.data[DOMAIN][config_entry.entry_id][UNDO_UPDATE_LISTENER]()
+#
+#     if unload_ok:
+#         hass.data[DOMAIN].pop(config_entry.entry_id)
+#
+#     return unload_ok
 
 
 async def update_listener(hass, config_entry):
     await hass.config_entries.async_reload(config_entry.entry_id)
-
 
 # class HfweatherDataUpdateCoordinator(DataUpdateCoordinator):
 #     def __init__(self, hass, session, api_key, api_version, location_key, longitude, latitude):
