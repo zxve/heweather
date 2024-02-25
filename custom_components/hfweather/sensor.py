@@ -48,7 +48,7 @@ class HfweatherSensor(Entity):
         self._state = None
         self._attributes = {"states": "null"}
         self._updatetime = None
-        self._attr_unique_id = f"{opobj[0] if opobj[0] else ''}-{coordinator.data['location_key']}"
+        self._attr_unique_id = f"{opobj[0] if opobj[0] else ''}-{self._type}-{coordinator.data['location_key']}"
 
     @property
     def extra_state_attributes(self):
