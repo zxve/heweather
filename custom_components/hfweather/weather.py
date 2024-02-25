@@ -56,14 +56,14 @@ class HfweatherEntity(WeatherEntity, CoordinatorEntity):
     _attr_native_wind_speed_unit = SPEED_KILOMETERS_PER_HOUR
     _attr_native_visibility_unit = LENGTH_KILOMETERS
 
-    def __init__(self, name, coordinator, location):
+    def __init__(self, name, coordinator):
         """Initialize the  weather."""
         self._name = name
         self._object_id = 'localweather'
         self.coordinator = coordinator
         self.wdata = coordinator.data["wdata"]
         self._updatetime = None
-        self._attr_unique_id = 'localweather_' + location
+        self._attr_unique_id = coordinator.data["location_key"]
         self._attr_supported_features = 0
         self._attr_supported_features = WeatherEntityFeature.FORECAST_DAILY
         self._attr_supported_features |= WeatherEntityFeature.FORECAST_HOURLY

@@ -64,7 +64,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class HfweatherSensor(Entity, CoordinatorEntity):
     """定义一个温度传感器的类，继承自HomeAssistant的Entity类."""
 
-    def __init__(self, name, option, coordinator, location, forecast_day=None):
+    def __init__(self, name, option, coordinator, forecast_day=None):
         """初始化."""
         self.coordinator = coordinator
         self.wsdata = coordinator.data["wsdata"]
@@ -79,7 +79,7 @@ class HfweatherSensor(Entity, CoordinatorEntity):
         self._state = None
         self._attributes = {"states": "null"}
         self._updatetime = None
-        self._attr_unique_id = OPTIONS[option][0] + location
+        self._attr_unique_id = OPTIONS[option][0] + coordinator.data["location_key"]
 
     @property
     def extra_state_attributes(self):
