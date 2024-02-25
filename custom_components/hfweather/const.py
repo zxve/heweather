@@ -57,7 +57,7 @@ CONF_STARTTIME = "starttime"
 UNDO_UPDATE_LISTENER = "undo_update_listener"
 
 OPTIONAL_SENSORS = (
-    "WindDirection",
+    "windDir",
 )
 
 # new
