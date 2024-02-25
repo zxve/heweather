@@ -3,17 +3,13 @@ import homeassistant.util.dt as dt_util
 
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.const import (
-    ATTR_DEVICE_CLASS,
     UnitOfLength,
     UnitOfTemperature,
     DEGREE, UnitOfSpeed,
-    TEMP_CELSIUS,
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
     PERCENTAGE,
     PRECIPITATION_MILLIMETERS_PER_HOUR,
-    SPEED_KILOMETERS_PER_HOUR,
-    PRESSURE_HPA,
-    LENGTH_KILOMETERS, DEVICE_CLASS_TEMPERATURE, DEVICE_CLASS_PM25, DEVICE_CLASS_PM10, DEVICE_CLASS_HUMIDITY,
+    DEVICE_CLASS_PM25, DEVICE_CLASS_PM10, DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_PRESSURE, WIND_SPEED, UnitOfPressure, CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT,
 )
 
@@ -40,7 +36,7 @@ ATTR_UPDATE_TIME = "更新时间"
 ATTR_SUGGESTION = "建议"
 ATTRIBUTION = "Data provided by 和风天气"
 ATTR_ICON = "icon"
-ATTR_FORECAST = CONF_DAILYSTEPS = "forecast"
+ATTR_FORECAST = "forecast"
 ATTR_LABEL = "label"
 ATTR_UNIT_IMPERIAL = "Imperial"
 ATTR_UNIT_METRIC = "Metric"
@@ -54,6 +50,9 @@ CONF_LATITUDE = "latitude"
 CONF_LONGITUDE = "longitude"
 COORDINATOR = "coordinator"
 CONF_ALERT = "alert"
+CONF_HOURLYSTEPS = "hourlysteps"
+CONF_DAILYSTEPS = "dailysteps"
+CONF_STARTTIME = "starttime"
 
 UNDO_UPDATE_LISTENER = "undo_update_listener"
 

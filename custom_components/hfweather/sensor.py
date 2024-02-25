@@ -37,10 +37,11 @@ class HfweatherSensor(Entity):
         self.coordinator = coordinator
         self.wsdata = coordinator.data["wsdata"]
         self.sdata = coordinator.data["sdata"]
-
+        self.alert = coordinator.data["alert"]
         opobj = OPTIONS[option]
         self._device_class = opobj[0]
-        self._name = opobj[1]
+        self._name = name
+        # self._name = opobj[1]
         self._icon = opobj[2]
         self._attrs = {ATTR_ATTRIBUTION: ATTRIBUTION}
         self._unit_of_measurement = opobj[3] if self.coordinator.data["is_metric"] == "metric:v2" else opobj[4]
@@ -101,10 +102,11 @@ class HfweatherSensor(Entity):
 
     @property
     def state(self):
-        if self._type in self.wsdata:
-            return self.wsdata[self._type]
-        elif self._type in self.sdata:
-            return self.sdata[self._type]
+        if self.alert:
+            if self._type in self.wsdata:
+                return self.wsdata[self._type]
+            elif self._type in self.sdata:
+                return self.sdata[self._type]
 
     @property
     def icon(self):

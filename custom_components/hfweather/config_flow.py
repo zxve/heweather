@@ -8,7 +8,7 @@ from collections import OrderedDict
 from homeassistant import config_entries
 from homeassistant.core import callback
 from .const import (
-    DOMAIN, NAME, CONF_ALERT, CONF_DISASTER_LEVEL, CONF_DISASTER_MSG
+    DOMAIN, NAME, CONF_ALERT, CONF_DISASTER_LEVEL, CONF_DISASTER_MSG, CONF_DAILYSTEPS, CONF_HOURLYSTEPS, CONF_STARTTIME
 )
 import voluptuous as vol
 
@@ -76,8 +76,8 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema[vol.Optional("api_version", default=api_version)] = str
             data_schema[vol.Optional(CONF_LONGITUDE, default=self.hass.config.longitude)] = cv.longitude
             data_schema[vol.Optional(CONF_LATITUDE, default=self.hass.config.latitude)] = cv.latitude
-            data_schema[vol.Optional(CONF_DISASTER_LEVEL, default=1)] = int
-            data_schema[vol.Optional(CONF_DISASTER_MSG, default="注意")] = str
+            # data_schema[vol.Optional(CONF_DISASTER_LEVEL, default=1)] = int
+            # data_schema[vol.Optional(CONF_DISASTER_MSG, default="注意")] = str
 
             data_schema[vol.Optional(CONF_NAME, default=NAME)] = str
             return self.async_show_form(
@@ -115,9 +115,29 @@ class HfweatherOptionsFlow(config_entries.OptionsFlow):
             data_schema=vol.Schema(
                 {
                     vol.Optional(
+                        CONF_DAILYSTEPS,
+                        default=self.config_entry.options.get(CONF_DAILYSTEPS, 3),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=3, max=7)),
+                    vol.Optional(
+                        CONF_HOURLYSTEPS,
+                        default=self.config_entry.options.get(CONF_HOURLYSTEPS, 24),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=24, max=168)),
+                    vol.Optional(
+                        CONF_STARTTIME,
+                        default=self.config_entry.options.get(CONF_STARTTIME, 0),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=-5, max=0)),
+                    vol.Optional(
                         CONF_ALERT,
                         default=self.config_entry.options.get(CONF_ALERT, True),
                     ): bool,
+                    vol.Optional(
+                        CONF_DISASTER_LEVEL,
+                        default=self.config_entry.options.get(CONF_DISASTER_LEVEL, 24),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=0, max=6)),
+                    vol.Optional(
+                        CONF_DISASTER_MSG,
+                        default=self.config_entry.options.get(CONF_DISASTER_MSG, 24),
+                    ): vol.All(vol.Coerce(str), "title"),
                 }
             ),
         )

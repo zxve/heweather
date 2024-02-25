@@ -19,7 +19,8 @@ from .const import (
     COORDINATOR,
     DOMAIN,
     UNDO_UPDATE_LISTENER, CONF_LOCATION, CONF_LONGITUDE, CONF_LATITUDE, PLATFORMS, TIME_BETWEEN_UPDATES,
-    CONDITION_CLASSES, DISASTER_LEVEL, CONF_DISASTER_MSG, CONF_DISASTER_LEVEL,
+    CONDITION_CLASSES, DISASTER_LEVEL, CONF_DISASTER_MSG, CONF_DISASTER_LEVEL, CONF_DAILYSTEPS, CONF_HOURLYSTEPS,
+    CONF_ALERT, CONF_STARTTIME,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -43,9 +44,13 @@ async def async_setup_entry(hass, config_entry) -> bool:
         api_version = config_entry.data[CONF_API_VERSION]
         disaster_msg = config_entry.data[CONF_DISASTER_MSG]
         disaster_level = config_entry.data[CONF_DISASTER_LEVEL]
+        dailysteps = config_entry.options.get(CONF_DAILYSTEPS, 3)
+        hourlysteps = config_entry.options.get(CONF_HOURLYSTEPS, 24)
+        alert = config_entry.options.get(CONF_ALERT, True)
+        starttime = config_entry.options.get(CONF_STARTTIME, 0)
 
         coordinator = HfCoordinator(hass, all_apis, api_key, api_version, location_key, longitude, latitude,
-                                    disaster_msg, disaster_level)
+                                    dailysteps, hourlysteps, starttime, alert, disaster_msg, disaster_level)
         await coordinator.async_refresh()
 
         _LOGGER.info(f"zxve 000: {coordinator.data}")
@@ -93,7 +98,8 @@ async def update_listener(hass, config_entry):
 
 
 class HfCoordinator(DataUpdateCoordinator):
-    def __init__(self, hass, my_apis, api_key, api_version, location_key, longitude, latitude, disaster_msg,
+    def __init__(self, hass, my_apis, api_key, api_version, location_key, longitude, latitude, dailysteps, hourlysteps,
+                 starttime, alert, disaster_msg,
                  disaster_level):
         self.hass = hass
         self.location_key = location_key
@@ -101,6 +107,10 @@ class HfCoordinator(DataUpdateCoordinator):
         self.latitude = latitude
         self.api_version = api_version
         self.api_key = api_key
+        self.dailysteps = dailysteps
+        self.hourlysteps = hourlysteps
+        self.starttime = starttime
+        self.alert = alert
         self.disaster_msg = disaster_msg
         self.disaster_level = disaster_level
         self.is_metric = "metric:v2"
@@ -116,19 +126,21 @@ class HfCoordinator(DataUpdateCoordinator):
         try:
             async with timeout(100):
                 resdata = await self.my_apis(self.hass, self.api_version, self.longitude, self.latitude, self.api_key,
+                                             self.dailysteps, self.hourlysteps, self.starttime, self.alert,
                                              self.disaster_msg, self.disaster_level)
         except Exception as e:
             raise e
         return {**resdata, "location_key": self.location_key, "is_metric": self.is_metric}
 
 
-async def all_apis(hass, api_version, longitude, latitude, key, disaster_msg, disaster_level):
+async def all_apis(hass, api_version, longitude, latitude, key, dailysteps, hourlysteps, starttime, alert, disaster_msg,
+                   disaster_level):
     try:
         async with timeout(50):
-            wdata = await weather_data_update(api_version, longitude, latitude, key)
+            wdata = await weather_data_update(api_version, longitude, latitude, key, dailysteps, hourlysteps)
             wsdata = await weather_sensor_data_update(api_version, longitude, latitude, key, disaster_msg,
-                                                      disaster_level)
-            sdata = await suggestion_data_update(hass, api_version, longitude, latitude, key)
+                                                      disaster_level, alert)
+            sdata = await suggestion_data_update(hass, api_version, longitude, latitude, key, alert)
 
     except Exception as e:
         raise e
@@ -136,10 +148,10 @@ async def all_apis(hass, api_version, longitude, latitude, key, disaster_msg, di
     return {"wdata": wdata, "wsdata": wsdata, "sdata": sdata}
 
 
-async def weather_data_update(api_version, longitude, latitude, key):
-    forecast_url = f"https://devapi.qweather.com/{api_version}/weather/7d?location={longitude},{latitude}&key={key}"
+async def weather_data_update(api_version, longitude, latitude, key, dailysteps, hourlysteps):
+    forecast_url = f"https://devapi.qweather.com/{api_version}/weather/{dailysteps}d?location={longitude},{latitude}&key={key}"
     weather_now_url = f"https://devapi.qweather.com/{api_version}/weather/now?location={longitude},{latitude}&key={key}"
-    forecast_hourly_url = f"https://devapi.qweather.com/{api_version}/weather/24h?location={longitude},{latitude}&key={key}"
+    forecast_hourly_url = f"https://devapi.qweather.com/{api_version}/weather/{hourlysteps}h?location={longitude},{latitude}&key={key}"
     params = {"location": f"{longitude}/{latitude}", "key": key}
     data = {}
     try:
@@ -281,13 +293,16 @@ async def weather_data_update(api_version, longitude, latitude, key):
     return data
 
 
-async def weather_sensor_data_update(api_version, longitude, latitude, key, disaster_msg, disaster_level):
+async def weather_sensor_data_update(api_version, longitude, latitude, key, disaster_msg, disaster_level, alert):
+    if not alert:
+        return {"alert": False}
+    data = {}
+
     weather_now_url = f"https://devapi.qweather.com/{api_version}/weather/now?location={longitude},{latitude}&key={key}"
     air_now_url = f"https://devapi.qweather.com/{api_version}/air/now?location={longitude},{latitude}&key={key}"
     disaster_warn_url = f"https://devapi.qweather.com/{api_version}/warning/now?location={longitude},{latitude}&key={key}"
     params = {"location": f"{longitude}/{latitude}", "key": key, }
     place = None
-    data = {}
     try:
         timeout = aiohttp.ClientTimeout(total=20)
         connector = aiohttp.TCPConnector(limit=10)
@@ -350,7 +365,10 @@ async def weather_sensor_data_update(api_version, longitude, latitude, key, disa
     return data
 
 
-async def suggestion_data_update(hass, api_version, longitude, latitude, key):
+async def suggestion_data_update(hass, api_version, longitude, latitude, key, alert):
+    if not alert:
+        return {"alert": False}
+
     url = f"https://devapi.qweather.com/{api_version}/indices/1d?location={longitude},{latitude}&key={key}&type=0"
     params = {"location": f"{longitude}/{latitude}", "key": key, "type": 0}
     updatetime = ["1", "1"]
