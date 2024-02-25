@@ -286,6 +286,7 @@ async def weather_sensor_data_update(api_version, longitude, latitude, key, disa
     air_now_url = f"https://devapi.qweather.com/{api_version}/air/now?location={longitude},{latitude}&key={key}"
     disaster_warn_url = f"https://devapi.qweather.com/{api_version}/warning/now?location={longitude},{latitude}&key={key}"
     params = {"location": f"{longitude}/{latitude}", "key": key, }
+    place = None
     data = {}
     try:
         timeout = aiohttp.ClientTimeout(total=20)
@@ -317,6 +318,7 @@ async def weather_sensor_data_update(api_version, longitude, latitude, key, disa
     data["vis"] = weather["vis"]
     data["cloud"] = weather["cloud"]
     data["dew"] = weather["dew"]
+    data["place"] = place
     data["updatetime"] = weather["obsTime"]
     data["category"] = air["category"]
     data["pm25"] = air["pm2p5"]

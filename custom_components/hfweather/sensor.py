@@ -102,9 +102,10 @@ class HfweatherSensor(Entity):
     @property
     def state(self):
         if self._type in dir(self.wsdata):
-            return self.wsdata[self._type]
+            rel = self.wsdata[self._type]
         elif self._type in dir(self.sdata):
-            return self.sdata[self._type]
+            rel = self.sdata[self._type]
+        return rel
 
     @property
     def icon(self):
