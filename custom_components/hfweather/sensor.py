@@ -37,7 +37,7 @@ class HfweatherSensor(Entity):
         self.coordinator = coordinator
         self.wsdata = coordinator.data["wsdata"]
         self.sdata = coordinator.data["sdata"]
-        self.alert = coordinator.data["alert"]
+        self.alert = coordinator.data.get("alert", True)
         opobj = OPTIONS[option]
         self._device_class = opobj[0]
         self._name = name
