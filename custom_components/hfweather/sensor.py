@@ -50,7 +50,7 @@ class HfweatherSensor(Entity):
         self._updatetime = None
         self.location_key = coordinator.data["location_key"]
         # self._attr_unique_id = f"{coordinator.data['location_key']}-{self._type}"
-        self._attr_unique_id = f"{self.location_key}-{self._type}".lower()
+        self._attr_unique_id = f"{self.location_key}-{self._type}".lower() # 最好前面和weather对象保持一致，疑似需要
 
     # @property
     # def extra_state_attributes(self):
@@ -84,6 +84,7 @@ class HfweatherSensor(Entity):
     def device_info(self):
         """Return the device info."""
         return {
+            # 踩坑。。。。HfweatherSensor要注册到Hfweather设备，这里到identifiers要和HfweatherEntity保持一致
             "identifiers": {(DOMAIN, self.location_key)},
             "name": self._name,
             "manufacturer": MANUFACTURER,
