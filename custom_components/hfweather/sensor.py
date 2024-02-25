@@ -48,7 +48,9 @@ class HfweatherSensor(Entity):
         self.forecast_day = forecast_day
         self._type = option
         self._updatetime = None
-        self._attr_unique_id = f"{coordinator.data['location_key']}-{self._type}"
+        self.location_key = coordinator.data["location_key"]
+        # self._attr_unique_id = f"{coordinator.data['location_key']}-{self._type}"
+        self._attr_unique_id = f"{self.location_key}-{self._type}".lower()
 
     # @property
     # def extra_state_attributes(self):
@@ -82,7 +84,7 @@ class HfweatherSensor(Entity):
     def device_info(self):
         """Return the device info."""
         return {
-            "identifiers": {(DOMAIN, self._attr_unique_id)},
+            "identifiers": {(DOMAIN, self.location_key)},
             "name": self._name,
             "manufacturer": MANUFACTURER,
             "entry_type": DeviceEntryType.SERVICE
