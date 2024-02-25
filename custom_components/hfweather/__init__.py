@@ -1,21 +1,16 @@
 import asyncio
 
 import aiohttp
-import requests
-import json
-import datetime
 import logging
 
-from aiohttp.client_exceptions import ClientConnectorError
 from async_timeout import timeout
 
-from homeassistant.const import CONF_API_KEY, TEMP_CELSIUS
+from homeassistant.const import CONF_API_KEY
 import async_timeout
 from homeassistant.core import Config, HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.exceptions import ConfigEntryAuthFailed
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from homeassistant.util.unit_system import METRIC_SYSTEM
 

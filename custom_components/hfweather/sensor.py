@@ -1,45 +1,14 @@
 import logging
-# from homeassistant.const import (
-#     ATTR_ATTRIBUTION,
-#     ATTR_DEVICE_CLASS,
-#     CONF_NAME,
-# )
-# from homeassistant.helpers.entity import Entity
-# from homeassistant.helpers.device_registry import DeviceEntryType
-#
-# from .const import (
-#     ATTR_ICON,
-#     ATTR_LABEL,
-#     ATTRIBUTION,
-#     COORDINATOR,
-#     DOMAIN,
-#     MANUFACTURER,
-#     OPTIONAL_SENSORS,
-#     SENSOR_TYPES,
-# )
-#
-# PARALLEL_UPDATES = 1
-# _LOGGER = logging.getLogger(__name__)
-
-# new
-import asyncio
-import async_timeout
-import aiohttp
-
-import homeassistant.util.dt as dt_util
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.helpers.entity import Entity
 from homeassistant.const import CONF_NAME, ATTR_ATTRIBUTION
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.event import async_track_time_interval
 
 from .const import (
     ATTRIBUTION,
     COORDINATOR,
     DOMAIN,
-    SENSOR_TYPES, ATTR_UPDATE_TIME, OPTIONS, DISASTER_LEVEL, CONF_LOCATION, CONF_API_KEY, CONF_DISASTER_MSG,
-    CONF_DISASTER_LEVEL, WEATHER_TIME_BETWEEN_UPDATES, LIFE_SUGGESTION_TIME_BETWEEN_UPDATES, CONF_LATITUDE,
-    CONF_LONGITUDE, MANUFACTURER, ATTR_LABEL, OPTIONAL_SENSORS,
+    ATTR_UPDATE_TIME, OPTIONS,
+    LIFE_SUGGESTION_TIME_BETWEEN_UPDATE, MANUFACTURER, ATTR_LABEL, OPTIONAL_SENSORS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -69,10 +38,11 @@ class HfweatherSensor(Entity):
         self.wsdata = coordinator.data["wsdata"]
         self.sdata = coordinator.data["sdata"]
 
-        self._object_id = OPTIONS[option][0]
-        self._name = OPTIONS[option][1]
-        self._icon = OPTIONS[option][2]
-        self._unit_of_measurement = OPTIONS[option][3]
+        opobj = OPTIONS[option]
+        self._device_class = opobj[0]
+        self._name = opobj[1]
+        self._icon = opobj[2]
+        self._unit_of_measurement = opobj[3] if self.coordinator.data["is_metric"] == "metric:v2" else opobj[4]
         self.forecast_day = forecast_day
         self._type = option
         self._state = None
@@ -105,6 +75,10 @@ class HfweatherSensor(Entity):
         return self._attr_unique_id
 
     @property
+    def device_class(self):
+        return self._device_class
+
+    @property
     def device_info(self):
         """Return the device info."""
         return {
@@ -114,10 +88,15 @@ class HfweatherSensor(Entity):
             "entry_type": DeviceEntryType.SERVICE
         }
 
-    # @property
-    # def registry_name(self):
-    #    """返回实体的friendly_name属性."""
-    #    return self._friendly_name
+    @property
+    def should_poll(self):
+        """Return the polling requirement of the entity."""
+        return False
+
+    @property
+    def available(self):
+        """Return True if entity is available."""
+        return self.coordinator.last_update_success
 
     @property
     def state(self):
@@ -157,100 +136,100 @@ class HfweatherSensor(Entity):
     async def async_update(self):
         await self.coordinator.async_request_refresh()
 
-    async def async_update(self):
-        """update函数变成了async_update."""
-        self._updatetime = self.wsdata["updatetime"]
-        if self._type == "temprature":
-            self._state = self.wsdata["temprature"]
-        elif self._type == "humidity":
-            self._state = self.wsdata["humidity"]
-        elif self._type == "feelsLike":
-            self._state = self.wsdata["feelsLike"]
-        elif self._type == "text":
-            self._state = self.wsdata["text"]
-        elif self._type == "windDir":
-            self._state = self.wsdata["windDir"]
-        elif self._type == "windScale":
-            self._state = self.wsdata["windScale"]
-        elif self._type == "windSpeed":
-            self._state = self.wsdata["windSpeed"]
-        elif self._type == "precip":
-            self._state = self.wsdata["precip"]
-        elif self._type == "pressure":
-            self._state = self.wsdata["pressure"]
-        elif self._type == "vis":
-            self._state = self.wsdata["vis"]
-        elif self._type == "dew":
-            self._state = self.wsdata["dew"]
-        elif self._type == "cloud":
-            self._state = self.wsdata["cloud"]
-        elif self._type == "category":
-            self._state = self.wsdata["category"]
-        elif self._type == "primary":
-            self._state = self.wsdata["primary"]
-        elif self._type == "level":
-            self._state = self.wsdata["level"]
-        elif self._type == "pm10":
-            self._state = self.wsdata["pm10"]
-        elif self._type == "pm25":
-            self._state = self.wsdata["pm25"]
-        elif self._type == "no2":
-            self._state = self.wsdata["no2"]
-        elif self._type == "so2":
-            self._state = self.wsdata["so2"]
-        elif self._type == "co":
-            self._state = self.wsdata["co"]
-        elif self._type == "o3":
-            self._state = self.wsdata["o3"]
-        elif self._type == "qlty":
-            self._state = self.wsdata["qlty"]
-        elif self._type == "disaster_warn":
-            if len(self.wsdata["disaster_warn"]) > 10:
-                self._state = 'on'
-                self._attributes["states"] = self.wsdata["disaster_warn"]
-            else:
-                self._state = 'off'
-                self._attributes["states"] = self.wsdata["disaster_warn"]
-        # life-suggestion
-        elif self._type == "air":
-            self._state = self.sdata["air"][0]
-            self._attributes["states"] = self.sdata["air"][1]
-        elif self._type == "comf":
-            self._state = self.sdata["comf"][0]
-            self._attributes["states"] = self.sdata["comf"][1]
-        elif self._type == "cw":
-            self._state = self.sdata["cw"][0]
-            self._attributes["states"] = self.sdata["cw"][1]
-        elif self._type == "drsg":
-            self._state = self.sdata["drsg"][0]
-            self._attributes["states"] = self.sdata["drsg"][1]
-        elif self._type == "flu":
-            self._state = self.sdata["flu"][0]
-            self._attributes["states"] = self.sdata["flu"][1]
-        elif self._type == "sport":
-            self._state = self.sdata["sport"][0]
-            self._attributes["states"] = self.sdata["sport"][1]
-        elif self._type == "trav":
-            self._state = self.sdata["trav"][0]
-            self._attributes["states"] = self.sdata["trav"][1]
-        elif self._type == "uv":
-            self._state = self.sdata["uv"][0]
-            self._attributes["states"] = self.sdata["uv"][1]
-        elif self._type == "guomin":
-            self._state = self.sdata["guomin"][0]
-            self._attributes["states"] = self.sdata["guomin"][1]
-        elif self._type == "kongtiao":
-            self._state = self.sdata["kongtiao"][0]
-            self._attributes["states"] = self.sdata["kongtiao"][1]
-        elif self._type == "liangshai":
-            self._state = self.sdata["liangshai"][0]
-            self._attributes["states"] = self.sdata["liangshai"][1]
-        elif self._type == "fangshai":
-            self._state = self.sdata["fangshai"][0]
-            self._attributes["states"] = self.sdata["fangshai"][1]
-        elif self._type == "sunglass":
-            self._state = self.sdata["uv"][0]
-            self._attributes["states"] = self.sdata["uv"][1]
-        elif self._type == "jiaotong":
-            self._state = self.sdata["jiaotong"][0]
-            self._attributes["states"] = self.sdata["jiaotong"][1]
+    # async def async_update(self):
+    #     """update函数变成了async_update."""
+    #     self._updatetime = self.wsdata["updatetime"]
+    #     if self._type == "temprature":
+    #         self._state = self.wsdata["temprature"]
+    #     elif self._type == "humidity":
+    #         self._state = self.wsdata["humidity"]
+    #     elif self._type == "feelsLike":
+    #         self._state = self.wsdata["feelsLike"]
+    #     elif self._type == "text":
+    #         self._state = self.wsdata["text"]
+    #     elif self._type == "windDir":
+    #         self._state = self.wsdata["windDir"]
+    #     elif self._type == "windScale":
+    #         self._state = self.wsdata["windScale"]
+    #     elif self._type == "windSpeed":
+    #         self._state = self.wsdata["windSpeed"]
+    #     elif self._type == "precip":
+    #         self._state = self.wsdata["precip"]
+    #     elif self._type == "pressure":
+    #         self._state = self.wsdata["pressure"]
+    #     elif self._type == "vis":
+    #         self._state = self.wsdata["vis"]
+    #     elif self._type == "dew":
+    #         self._state = self.wsdata["dew"]
+    #     elif self._type == "cloud":
+    #         self._state = self.wsdata["cloud"]
+    #     elif self._type == "category":
+    #         self._state = self.wsdata["category"]
+    #     elif self._type == "primary":
+    #         self._state = self.wsdata["primary"]
+    #     elif self._type == "level":
+    #         self._state = self.wsdata["level"]
+    #     elif self._type == "pm10":
+    #         self._state = self.wsdata["pm10"]
+    #     elif self._type == "pm25":
+    #         self._state = self.wsdata["pm25"]
+    #     elif self._type == "no2":
+    #         self._state = self.wsdata["no2"]
+    #     elif self._type == "so2":
+    #         self._state = self.wsdata["so2"]
+    #     elif self._type == "co":
+    #         self._state = self.wsdata["co"]
+    #     elif self._type == "o3":
+    #         self._state = self.wsdata["o3"]
+    #     elif self._type == "qlty":
+    #         self._state = self.wsdata["qlty"]
+    #     elif self._type == "disaster_warn":
+    #         if len(self.wsdata["disaster_warn"]) > 10:
+    #             self._state = 'on'
+    #             self._attributes["states"] = self.wsdata["disaster_warn"]
+    #         else:
+    #             self._state = 'off'
+    #             self._attributes["states"] = self.wsdata["disaster_warn"]
+    #     # life-suggestion
+    #     elif self._type == "air":
+    #         self._state = self.sdata["air"][0]
+    #         self._attributes["states"] = self.sdata["air"][1]
+    #     elif self._type == "comf":
+    #         self._state = self.sdata["comf"][0]
+    #         self._attributes["states"] = self.sdata["comf"][1]
+    #     elif self._type == "cw":
+    #         self._state = self.sdata["cw"][0]
+    #         self._attributes["states"] = self.sdata["cw"][1]
+    #     elif self._type == "drsg":
+    #         self._state = self.sdata["drsg"][0]
+    #         self._attributes["states"] = self.sdata["drsg"][1]
+    #     elif self._type == "flu":
+    #         self._state = self.sdata["flu"][0]
+    #         self._attributes["states"] = self.sdata["flu"][1]
+    #     elif self._type == "sport":
+    #         self._state = self.sdata["sport"][0]
+    #         self._attributes["states"] = self.sdata["sport"][1]
+    #     elif self._type == "trav":
+    #         self._state = self.sdata["trav"][0]
+    #         self._attributes["states"] = self.sdata["trav"][1]
+    #     elif self._type == "uv":
+    #         self._state = self.sdata["uv"][0]
+    #         self._attributes["states"] = self.sdata["uv"][1]
+    #     elif self._type == "guomin":
+    #         self._state = self.sdata["guomin"][0]
+    #         self._attributes["states"] = self.sdata["guomin"][1]
+    #     elif self._type == "kongtiao":
+    #         self._state = self.sdata["kongtiao"][0]
+    #         self._attributes["states"] = self.sdata["kongtiao"][1]
+    #     elif self._type == "liangshai":
+    #         self._state = self.sdata["liangshai"][0]
+    #         self._attributes["states"] = self.sdata["liangshai"][1]
+    #     elif self._type == "fangshai":
+    #         self._state = self.sdata["fangshai"][0]
+    #         self._attributes["states"] = self.sdata["fangshai"][1]
+    #     elif self._type == "sunglass":
+    #         self._state = self.sdata["uv"][0]
+    #         self._attributes["states"] = self.sdata["uv"][1]
+    #     elif self._type == "jiaotong":
+    #         self._state = self.sdata["jiaotong"][0]
+    #         self._attributes["states"] = self.sdata["jiaotong"][1]

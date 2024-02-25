@@ -1,6 +1,5 @@
 import logging
 from datetime import timedelta, datetime
-from homeassistant.core import callback
 
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.components.weather import (
@@ -8,30 +7,20 @@ from homeassistant.components.weather import (
     WeatherEntityFeature, ATTR_FORECAST_TIME, ATTR_FORECAST_CONDITION, ATTR_FORECAST_NATIVE_TEMP,
     ATTR_FORECAST_NATIVE_TEMP_LOW, Forecast, ATTR_FORECAST_HUMIDITY, ATTR_FORECAST_WIND_BEARING,
     ATTR_FORECAST_NATIVE_WIND_SPEED
-    # ATTR_FORECAST_CONDITION,
-    # ATTR_FORECAST_PRECIPITATION,
-    # ATTR_FORECAST_TEMP,
-    # ATTR_FORECAST_TEMP_LOW,
-    # ATTR_FORECAST_TIME,
-    # ATTR_FORECAST_WIND_BEARING,
-    # ATTR_FORECAST_WIND_SPEED
 )
 from homeassistant.const import (
     TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
-    CONF_NAME, PRECIPITATION_MILLIMETERS_PER_HOUR, PRESSURE_HPA, SPEED_KILOMETERS_PER_HOUR, LENGTH_KILOMETERS
+    CONF_NAME, UnitOfVolumetricFlux, UnitOfPressure, UnitOfSpeed, UnitOfLength,
 )
-from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
     ATTRIBUTION,
     COORDINATOR,
     DOMAIN,
-    MANUFACTURER, CONDITION_CLASSES, DEFAULT_TIME
+    MANUFACTURER, CONDITION_CLASSES
 )
 
-PARALLEL_UPDATES = 1
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -51,10 +40,10 @@ class HfweatherEntity(WeatherEntity, CoordinatorEntity):
     """Representation of a weather condition."""
 
     _attr_native_temperature_unit = TEMP_CELSIUS
-    _attr_native_precipitation_unit = PRECIPITATION_MILLIMETERS_PER_HOUR
-    _attr_native_pressure_unit = PRESSURE_HPA
-    _attr_native_wind_speed_unit = SPEED_KILOMETERS_PER_HOUR
-    _attr_native_visibility_unit = LENGTH_KILOMETERS
+    _attr_native_precipitation_unit = UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR
+    _attr_native_pressure_unit = UnitOfPressure.HPA
+    _attr_native_wind_speed_unit = UnitOfSpeed.KILOMETERS_PER_HOUR
+    _attr_native_visibility_unit = UnitOfLength.KILOMETERS
 
     def __init__(self, name, coordinator):
         """Initialize the  weather."""
