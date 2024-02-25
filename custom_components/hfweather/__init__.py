@@ -189,40 +189,45 @@ async def weather_data_update(api_version, longitude, latitude, key, dailysteps,
 
     datemsg = forecast["daily"]
 
-    forec_cond = []
-    forec_text = []
+    # forec_cond = []
+    # forec_text = []
+    daily_tmp = []
     for n in range(dailysteps):
         for i, j in CONDITION_CLASSES.items():
             if datemsg[n]["textDay"] in j:
-                forec_cond.append(i)
-                forec_text.append(datemsg[n]["textDay"])
+                # forec_cond.append(i)
+                # forec_text.append(datemsg[n]["textDay"])
 
-    data["forecast"] = [
-        [forec_cond[0], int(datemsg[0]["tempMax"]), int(datemsg[0]["tempMin"]), forec_text[0]],
-        [forec_cond[1], int(datemsg[1]["tempMax"]), int(datemsg[1]["tempMin"]), forec_text[1]],
-        [forec_cond[2], int(datemsg[2]["tempMax"]), int(datemsg[2]["tempMin"]), forec_text[2]],
-        [forec_cond[3], int(datemsg[3]["tempMax"]), int(datemsg[3]["tempMin"]), forec_text[3]],
-        [forec_cond[4], int(datemsg[4]["tempMax"]), int(datemsg[4]["tempMin"]), forec_text[4]],
-        [forec_cond[5], int(datemsg[5]["tempMax"]), int(datemsg[5]["tempMin"]), forec_text[5]],
-        [forec_cond[6], int(datemsg[6]["tempMax"]), int(datemsg[6]["tempMin"]), forec_text[6]]
-    ]
+                daily_tmp.append(
+                    [i, int(datemsg[n]["tempMax"]), int(datemsg[n]["tempMin"]), datemsg[n]["textDay"]]
+                )
+    data["forecast"] = daily_tmp
+    # data["forecast"] = [
+    #     [forec_cond[0], int(datemsg[0]["tempMax"]), int(datemsg[0]["tempMin"]), forec_text[0]],
+    #     [forec_cond[1], int(datemsg[1]["tempMax"]), int(datemsg[1]["tempMin"]), forec_text[1]],
+    #     [forec_cond[2], int(datemsg[2]["tempMax"]), int(datemsg[2]["tempMin"]), forec_text[2]],
+    #     [forec_cond[3], int(datemsg[3]["tempMax"]), int(datemsg[3]["tempMin"]), forec_text[3]],
+    #     [forec_cond[4], int(datemsg[4]["tempMax"]), int(datemsg[4]["tempMin"]), forec_text[4]],
+    #     [forec_cond[5], int(datemsg[5]["tempMax"]), int(datemsg[5]["tempMin"]), forec_text[5]],
+    #     [forec_cond[6], int(datemsg[6]["tempMax"]), int(datemsg[6]["tempMin"]), forec_text[6]]
+    # ]
 
     hourlymsg = forecast_hourly["hourly"]
-    forecast_hourly = []
-    forec_text = []
-    tmp = []
+    # forecast_hourly = []
+    # forec_text = []
+    hourly_tmp = []
     for n in range(hourlysteps):
         for i, j in CONDITION_CLASSES.items():
             if hourlymsg[n]["text"] in j:
-                forecast_hourly.append(i)
-                forec_text.append(hourlymsg[n]["text"])
+                # forecast_hourly.append(i)
+                # forec_text.append(hourlymsg[n]["text"])
 
-                tmp.append(
+                hourly_tmp.append(
                     [i, float(hourlymsg[n]["temp"]), float(hourlymsg[n]["humidity"]),
                      float(hourlymsg[n]["precip"]), hourlymsg[n]["windDir"], int(hourlymsg[n]["windSpeed"]),
-                     float(hourlymsg[n]["pop"]), forec_text[n]]
+                     float(hourlymsg[n]["pop"]), hourlymsg[n]["text"]]
                 )
-    data["forecast_hourly"] = tmp
+    data["forecast_hourly"] = hourly_tmp
     # data["forecast_hourly"] = [
     #     [forecast_hourly[0], float(hourlymsg[0]["temp"]), float(hourlymsg[0]["humidity"]),
     #      float(hourlymsg[0]["precip"]), hourlymsg[0]["windDir"], int(hourlymsg[0]["windSpeed"]),
