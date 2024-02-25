@@ -42,9 +42,8 @@ async def async_setup_entry(hass, config_entry) -> bool:
         longitude = config_entry.data[CONF_LONGITUDE]
         latitude = config_entry.data[CONF_LATITUDE]
         api_version = config_entry.data[CONF_API_VERSION]
-        # disaster_msg = config_entry.options[CONF_DISASTER_MSG]
-        disaster_msg = None
-        disaster_level = config_entry.options[CONF_DISASTER_LEVEL]
+        disaster_msg = config_entry.options.get(CONF_DISASTER_MSG, "title")
+        disaster_level = config_entry.options.get(CONF_DISASTER_LEVEL, 1)
         dailysteps = config_entry.options.get(CONF_DAILYSTEPS, 3)
         hourlysteps = config_entry.options.get(CONF_HOURLYSTEPS, 24)
         alert = config_entry.options.get(CONF_ALERT, True)
