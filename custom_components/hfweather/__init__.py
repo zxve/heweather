@@ -52,6 +52,8 @@ async def async_setup_entry(hass, config_entry) -> bool:
                                     disaster_msg, disaster_level)
         await coordinator.async_refresh()
 
+        _LOGGER.info(f"zxve 000: {coordinator.data}")
+
         if not coordinator.last_update_success:
             raise ConfigEntryNotReady
 

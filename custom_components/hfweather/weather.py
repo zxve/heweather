@@ -152,7 +152,7 @@ class HfweatherEntity(WeatherEntity, CoordinatorEntity):
     @property
     def condition(self):
         """Return the weather condition."""
-        if self._condition:
+        if self.wdata["condition"]:
             match_list = [k for k, v in CONDITION_CLASSES.items() if self.wdata["condition"] in v]
             return match_list[0] if match_list else 'unknown'
         else:
