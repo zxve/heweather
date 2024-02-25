@@ -42,6 +42,7 @@ class HfweatherSensor(Entity):
         self._device_class = opobj[0]
         self._name = opobj[1]
         self._icon = opobj[2]
+        self._attrs = {ATTR_ATTRIBUTION: ATTRIBUTION}
         self._unit_of_measurement = opobj[3] if self.coordinator.data["is_metric"] == "metric:v2" else opobj[4]
         self.forecast_day = forecast_day
         self._type = option
@@ -50,10 +51,10 @@ class HfweatherSensor(Entity):
         self._updatetime = None
         self._attr_unique_id = f"{opobj[0] if opobj[0] else ''}-{self._type}-{coordinator.data['location_key']}"
 
-    @property
-    def extra_state_attributes(self):
-        """Return entity specific state attributes."""
-        return self._attributes
+    # @property
+    # def extra_state_attributes(self):
+    #     """Return entity specific state attributes."""
+    #     return self._attributes
 
     @property
     def name(self):
@@ -64,10 +65,10 @@ class HfweatherSensor(Entity):
         # return f"{self._name} {OPTIONS[self._type][1]}"
         return f"{self._name}"
 
-    @property
-    def attribution(self):
-        """Return the attribution."""
-        return ATTRIBUTION
+    # @property
+    # def attribution(self):
+    #     """Return the attribution."""
+    #     return ATTRIBUTION
 
     @property
     def unique_id(self):
@@ -115,14 +116,14 @@ class HfweatherSensor(Entity):
         """返回unit_of_measuremeng属性."""
         return self._unit_of_measurement
 
-    @property
-    def device_state_attributes(self):
-        """设置其它一些属性值."""
-        if self._state is not None:
-            return {
-                ATTR_ATTRIBUTION: ATTRIBUTION,
-                ATTR_UPDATE_TIME: self._updatetime
-            }
+    # @property
+    # def device_state_attributes(self):
+    #     """设置其它一些属性值."""
+    #     if self._state is not None:
+    #         return {
+    #             ATTR_ATTRIBUTION: ATTRIBUTION,
+    #             ATTR_UPDATE_TIME: self._updatetime
+    #         }
 
     @property
     def entity_registry_enabled_default(self):
