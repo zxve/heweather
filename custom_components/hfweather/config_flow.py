@@ -134,10 +134,10 @@ class HfweatherOptionsFlow(config_entries.OptionsFlow):
                         CONF_DISASTER_LEVEL,
                         default=self.config_entry.options.get(CONF_DISASTER_LEVEL, 24),
                     ): vol.All(vol.Coerce(int), vol.Range(min=0, max=6)),
-                    vol.Optional(
-                        CONF_DISASTER_MSG,
-                        default=self.config_entry.options.get(CONF_DISASTER_MSG, 24),
-                    ): vol.All(vol.Coerce(str), "title"),
+                    # vol.Optional(
+                    #     CONF_DISASTER_MSG,
+                    #     default=self.config_entry.options.get(CONF_DISASTER_MSG, 24),
+                    # ): vol.All(vol.Coerce(str), "title"),
                 }
             ),
         )
