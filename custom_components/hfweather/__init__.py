@@ -306,7 +306,7 @@ async def weather_sensor_data_update(api_version, longitude, latitude, key, disa
             async with session.get(disaster_warn_url) as response:
                 json_data = await response.json()
                 disaster_warn = json_data["warning"]
-    except(asyncio.TimeoutError, aiohttp.ClientError):
+    except Exception as e:
         _LOGGER.error("Error while accessing: %s", weather_now_url)
         return
 
@@ -373,7 +373,7 @@ async def suggestion_data_update(hass, api_version, longitude, latitude, key):
         session = async_get_clientsession(hass)
         with async_timeout.timeout(15):
             response = await session.get(url)
-    except(asyncio.TimeoutError, aiohttp.ClientError):
+    except Exception as e:
         _LOGGER.error("Error while accessing: %s", url)
         return
 
