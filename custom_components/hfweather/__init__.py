@@ -118,24 +118,24 @@ class HfCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         try:
-            async with timeout(10):
+            async with timeout(100):
                 resdata = await self.my_apis(self.hass, self.api_version, self.longitude, self.latitude, self.api_key,
                                              self.disaster_msg, self.disaster_level)
-        except  ClientConnectorError as error:
-            raise UpdateFailed(error)
+        except Exception as e:
+            raise e
         return {**resdata, "location_key": self.location_key, "is_metric": self.is_metric}
 
 
 async def all_apis(hass, api_version, longitude, latitude, key, disaster_msg, disaster_level):
     try:
-        async with timeout(10):
+        async with timeout(50):
             wdata = await weather_data_update(api_version, longitude, latitude, key)
             wsdata = await weather_sensor_data_update(api_version, longitude, latitude, key, disaster_msg,
                                                       disaster_level)
             sdata = await suggestion_data_update(hass, api_version, longitude, latitude, key)
 
-    except ClientConnectorError as error:
-        raise UpdateFailed(error)
+    except Exception as e:
+        raise e
 
     return {"wdata": wdata, "wsdata": wsdata, "sdata": sdata}
 
@@ -161,10 +161,7 @@ async def weather_data_update(api_version, longitude, latitude, key):
                 forecast_hourly = json_data
 
     except Exception as e:
-        _LOGGER.error("Error while accessing: %s", weather_now_url)
-        _LOGGER.error("Error while accessing: %s", forecast_url)
-        _LOGGER.error("Error while accessing: %s", forecast_hourly_url)
-        return
+        raise e
 
     data["temperature"] = float(weather["temp"])
     data["humidity"] = float(weather["humidity"])
@@ -309,8 +306,7 @@ async def weather_sensor_data_update(api_version, longitude, latitude, key, disa
                 json_data = await response.json()
                 disaster_warn = json_data["warning"]
     except Exception as e:
-        _LOGGER.error("Error while accessing: %s", weather_now_url)
-        return
+        raise e
 
     # 根据http返回的结果，更新数据
     data["temperature"] = weather["temp"]
@@ -376,9 +372,7 @@ async def suggestion_data_update(hass, api_version, longitude, latitude, key):
         with async_timeout.timeout(15):
             response = await session.get(url)
     except Exception as e:
-        _LOGGER.error("Error while accessing: %s", url)
-        return
-
+        raise e
     if response.status != 200:
         _LOGGER.error("Error while accessing: %s, status=%d",
                       url,
