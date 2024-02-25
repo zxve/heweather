@@ -1,4 +1,6 @@
 import asyncio
+
+import aiohttp
 import requests
 import json
 import datetime
@@ -14,7 +16,6 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.util import aiohttp
 
 from homeassistant.util.unit_system import METRIC_SYSTEM
 

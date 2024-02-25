@@ -40,7 +40,7 @@ from .const import (
     DOMAIN,
     SENSOR_TYPES, ATTR_UPDATE_TIME, OPTIONS, DISASTER_LEVEL, CONF_LOCATION, CONF_API_KEY, CONF_DISASTER_MSG,
     CONF_DISASTER_LEVEL, WEATHER_TIME_BETWEEN_UPDATES, LIFE_SUGGESTION_TIME_BETWEEN_UPDATES, CONF_LATITUDE,
-    CONF_LONGITUDE, MANUFACTURER, ATTR_LABEL,
+    CONF_LONGITUDE, MANUFACTURER, ATTR_LABEL, OPTIONAL_SENSORS,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -122,7 +122,10 @@ class HfweatherSensor(Entity, CoordinatorEntity):
 
     @property
     def state(self):
-        return getattr(self.wdata, self._type) if self._type in dir(self.wdata) else None
+        if self._type in dir(self.wsdata):
+            return self.wsdata[self._type]
+        elif self._type in dir(self.sdata):
+            return self.sdata[self._type]
 
     @property
     def icon(self):
@@ -142,6 +145,18 @@ class HfweatherSensor(Entity, CoordinatorEntity):
                 ATTR_ATTRIBUTION: ATTRIBUTION,
                 ATTR_UPDATE_TIME: self._updatetime
             }
+
+    @property
+    def entity_registry_enabled_default(self):
+        return bool(self._type not in OPTIONAL_SENSORS)
+
+    async def async_added_to_hass(self):
+        self.async_on_remove(
+            self.coordinator.async_add_listener(self.async_write_ha_state)
+        )
+
+    async def async_update(self):
+        await self.coordinator.async_request_refresh()
 
     async def async_update(self):
         """update函数变成了async_update."""
