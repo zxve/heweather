@@ -32,7 +32,6 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.const import CONF_NAME, ATTR_ATTRIBUTION
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_track_time_interval
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
     ATTRIBUTION,
@@ -61,14 +60,14 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         raise e
 
 
-class HfweatherSensor(Entity, CoordinatorEntity):
+class HfweatherSensor(Entity):
     """定义一个温度传感器的类，继承自HomeAssistant的Entity类."""
 
     def __init__(self, name, option, coordinator, forecast_day=None):
         """初始化."""
         self.coordinator = coordinator
         self.wsdata = coordinator.data["wsdata"]
-        self.sdata = coordinator.data["swdata"]
+        self.sdata = coordinator.data["sdata"]
 
         self._object_id = OPTIONS[option][0]
         self._name = OPTIONS[option][1]
