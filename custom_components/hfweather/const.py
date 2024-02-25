@@ -76,7 +76,7 @@ DISASTER_LEVEL = {
 WEATHER_TIME_BETWEEN_UPDATES = timedelta(minutes=60)
 LIFE_SUGGESTION_TIME_BETWEEN_UPDATES = timedelta(minutes=60)
 
-TIME_BETWEEN_UPDATES = timedelta(minutes=60)
+TIME_BETWEEN_UPDATES = timedelta(minutes=600)
 HOURLY_TIME_BETWEEN_UPDATES = timedelta(minutes=60)
 
 DEFAULT_TIME = dt_util.now()
