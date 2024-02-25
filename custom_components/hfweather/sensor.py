@@ -41,7 +41,7 @@ class HfweatherSensor(Entity):
         opobj = OPTIONS[option]
         self._device_class = opobj[0]
         # self._name = name
-        self._name = opobj[1]
+        self._name = f"{name} {opobj[1]}"
         self._icon = opobj[2]
         self._attrs = {ATTR_ATTRIBUTION: ATTRIBUTION}
         self._unit_of_measurement = opobj[3] if self.coordinator.data["is_metric"] == "metric:v2" else opobj[4]
