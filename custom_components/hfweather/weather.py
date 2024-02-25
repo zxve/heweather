@@ -9,8 +9,7 @@ from homeassistant.components.weather import (
     ATTR_FORECAST_NATIVE_WIND_SPEED
 )
 from homeassistant.const import (
-    TEMP_CELSIUS,
-    CONF_NAME, UnitOfVolumetricFlux, UnitOfPressure, UnitOfSpeed, UnitOfLength,
+    CONF_NAME, UnitOfVolumetricFlux, UnitOfPressure, UnitOfSpeed, UnitOfLength, UnitOfTemperature,
 )
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -39,7 +38,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class HfweatherEntity(WeatherEntity, CoordinatorEntity):
     """Representation of a weather condition."""
 
-    _attr_native_temperature_unit = TEMP_CELSIUS
+    _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_native_precipitation_unit = UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR
     _attr_native_pressure_unit = UnitOfPressure.HPA
     _attr_native_wind_speed_unit = UnitOfSpeed.KILOMETERS_PER_HOUR
