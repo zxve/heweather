@@ -48,9 +48,8 @@ async def async_setup_entry(hass, config_entry) -> bool:
         disaster_msg = config_entry.data[CONF_DISASTER_MSG]
         disaster_level = config_entry.data[CONF_DISASTER_LEVEL]
 
-        coordinator = HfCoordinator(hass, [weather_data_update, weather_sensor_data_update, suggestion_data_update],
-                                    api_key, api_version, location_key, longitude,
-                                    latitude, disaster_msg, disaster_level)
+        coordinator = HfCoordinator(hass, all_apis, api_key, api_version, location_key, longitude, latitude,
+                                    disaster_msg, disaster_level)
         await coordinator.async_refresh()
 
         if not coordinator.last_update_success:
@@ -159,7 +158,7 @@ async def weather_data_update(api_version, longitude, latitude, key):
                 json_data = await response.json()
                 forecast_hourly = json_data
 
-    except(asyncio.TimeoutError, aiohttp.ClientError):
+    except Exception as e:
         _LOGGER.error("Error while accessing: %s", weather_now_url)
         _LOGGER.error("Error while accessing: %s", forecast_url)
         _LOGGER.error("Error while accessing: %s", forecast_hourly_url)
