@@ -74,7 +74,7 @@ DISASTER_LEVEL = {
     "Extreme": 6
 }
 
-TIME_BETWEEN_UPDATES = timedelta(minutes=600)
+TIME_BETWEEN_UPDATES = timedelta(minutes=120)
 
 DEFAULT_TIME = dt_util.now()
 CONF_OPTIONS = "options"
