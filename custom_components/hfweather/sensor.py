@@ -47,10 +47,8 @@ class HfweatherSensor(Entity):
         self._unit_of_measurement = opobj[3] if self.coordinator.data["is_metric"] == "metric:v2" else opobj[4]
         self.forecast_day = forecast_day
         self._type = option
-        self._state = None
-        self._attributes = {"states": "null"}
         self._updatetime = None
-        self._attr_unique_id = f"{opobj[0] if opobj[0] else ''}-{self._type}-{coordinator.data['location_key']}"
+        self._attr_unique_id = f"{coordinator.data['location_key']}-{self._type}"
 
     # @property
     # def extra_state_attributes(self):

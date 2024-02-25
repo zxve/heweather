@@ -9,8 +9,7 @@ from homeassistant.const import (
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
     PERCENTAGE,
     PRECIPITATION_MILLIMETERS_PER_HOUR,
-    DEVICE_CLASS_PM25, DEVICE_CLASS_PM10, DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_PRESSURE, WIND_SPEED, UnitOfPressure, CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT,
+    WIND_SPEED, UnitOfPressure, CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT,
 )
 
 # 方便直接使用Home Assistant Brands上面的和风天气图标, 在这里和manifest.json中修改domain为heweather
@@ -45,7 +44,6 @@ NAME = "Hfweather"
 
 CONF_API_KEY = "api_key"
 CONF_API_VERSION = "api_version"
-CONF_LOCATION = "location"
 CONF_LATITUDE = "latitude"
 CONF_LONGITUDE = "longitude"
 COORDINATOR = "coordinator"

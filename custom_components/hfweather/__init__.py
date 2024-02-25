@@ -99,8 +99,7 @@ async def update_listener(hass, config_entry):
 
 class HfCoordinator(DataUpdateCoordinator):
     def __init__(self, hass, my_apis, api_key, api_version, location_key, longitude, latitude, dailysteps, hourlysteps,
-                 starttime, alert, disaster_msg,
-                 disaster_level):
+                 starttime, alert, disaster_msg, disaster_level):
         self.hass = hass
         self.location_key = location_key
         self.longitude = longitude
