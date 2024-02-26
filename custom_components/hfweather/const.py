@@ -9,7 +9,7 @@ from homeassistant.const import (
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
     PERCENTAGE,
     PRECIPITATION_MILLIMETERS_PER_HOUR,
-    WIND_SPEED, UnitOfPressure, CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT,
+    WIND_SPEED, UnitOfPressure, CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT, UnitOfVolumetricFlux,
 )
 
 # 方便直接使用Home Assistant Brands上面的和风天气图标, 在这里和manifest.json中修改domain为heweather
@@ -86,7 +86,7 @@ OPTIONS = {
     "feelsLike": [SensorDeviceClass.TEMPERATURE, "体感温度", "mdi:thermometer", UnitOfTemperature.CELSIUS,
                   UnitOfTemperature.FAHRENHEIT],
     "text": [None, "天气描述", "mdi:thermometer", '', ''],
-    "precip": [None, "小时降水量", "mdi:weather-rainy", PRECIPITATION_MILLIMETERS_PER_HOUR,
+    "precip": [None, "小时降水量", "mdi:weather-rainy", UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
                UnitOfLength.INCHES],
     "windDir": [None, "风向", "mdi:windsock", DEGREE, DEGREE],
     "windScale": [None, "风力等级", "mdi:weather-windy", '', ''],

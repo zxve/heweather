@@ -38,7 +38,7 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 # 若location则使用，否则使用user_input的经纬度
                 if user_input["location"] != 'None':
                     # lat, lon = self.hass.states.get(user_input["location"]).state.split(",")
-                    lat, lon = self.hass.states.get(user_input["location"]).attributes["location"].split(",")
+                    lat, lon = self.hass.states.get(user_input["location"]).attributes["location"]
 
                     user_input["latitude"] = lat.strip()[1:]
                     user_input["longitude"] = lon.strip()[:-1]
@@ -74,7 +74,7 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             api_version = "v7"
             data_schema = OrderedDict()
             data_schema[vol.Required(CONF_API_KEY)] = str
-            data_schema[vol.Optional("location", default="sensor.location")] = str
+            data_schema[vol.Optional("location", default="sensor.xxx_geocoded_location")] = str
             data_schema[vol.Optional("api_version", default=api_version)] = str
             data_schema[vol.Optional(CONF_LONGITUDE, default=self.hass.config.longitude)] = cv.longitude
             data_schema[vol.Optional(CONF_LATITUDE, default=self.hass.config.latitude)] = cv.latitude
