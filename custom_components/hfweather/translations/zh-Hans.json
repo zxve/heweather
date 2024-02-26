@@ -7,7 +7,7 @@
         "description": "如果您需要配置方面的帮助，请查看此处: https://github.com/zxve/hfweather",
         "data": {
           "api_key": "和风API Key",
-          "location": "手机定位sensor对象名称, xxx是phone name",
+          "location": "手机定位sensor, xxx是phone name",
           "api_version": "API版本,默认是v7",
           "latitude": "维度",
           "longitude": "经度",
