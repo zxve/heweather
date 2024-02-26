@@ -8,7 +8,6 @@ from homeassistant.const import (
     DEGREE, UnitOfSpeed,
     CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
     PERCENTAGE,
-    PRECIPITATION_MILLIMETERS_PER_HOUR,
     WIND_SPEED, UnitOfPressure, CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT, UnitOfVolumetricFlux,
 )
 
