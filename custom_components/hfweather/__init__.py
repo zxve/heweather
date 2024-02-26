@@ -118,7 +118,7 @@ class HfCoordinator(DataUpdateCoordinator):
         else:
             self.is_metric = "imperial"
 
-        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=datetime.timedelta(minutes=10))
+        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=datetime.timedelta(minutes=60))
 
     async def _async_update_data(self):
         try:
@@ -361,11 +361,11 @@ async def weather_sensor_data_update(api_version, longitude, latitude, key, disa
     for i in disaster_warn:
         # if DISASTER_LEVEL[i["severity"]] >= 订阅等级:
         if DISASTER_LEVEL[i["severity"]] >= int(disaster_level):
-            allmsg = allmsg + i["title"] + ':' + i["text"] + '||'
-            titlemsg = titlemsg + i["title"] + '||'
+            allmsg = f'{allmsg}{i["title"]}:{i["text"]}||'
+            titlemsg = f'{titlemsg}{i["title"]}||'
 
     if len(titlemsg) < 5:
-        disaster_warn = '近日无' + disaster_level + '级及以上灾害'
+        disaster_warn = f'近日无{disaster_level}级及以上灾害'
     # if(订阅标题)
     elif disaster_msg == 'title':
         disaster_warn = titlemsg
