@@ -39,9 +39,8 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 if user_input["location"] != 'None':
                     # lat, lon = self.hass.states.get(user_input["location"]).state.split(",")
                     lat, lon = self.hass.states.get(user_input["location"]).attributes["location"]
-
-                    user_input["latitude"] = lat.strip()[1:]
-                    user_input["longitude"] = lon.strip()[:-1]
+                    user_input["latitude"] = lat
+                    user_input["longitude"] = lon
 
                 existing = await self._check_existing(user_input[CONF_NAME])
                 if existing:
