@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 
 import aiohttp
 import logging
@@ -52,8 +53,6 @@ async def async_setup_entry(hass, config_entry) -> bool:
         coordinator = HfCoordinator(hass, all_apis, api_key, api_version, location_key, longitude, latitude,
                                     dailysteps, hourlysteps, starttime, alert, disaster_msg, disaster_level)
         await coordinator.async_refresh()
-
-        _LOGGER.info(f"zxve 000: {coordinator.data}")
 
         if not coordinator.last_update_success:
             raise ConfigEntryNotReady
@@ -112,18 +111,18 @@ class HfCoordinator(DataUpdateCoordinator):
         self.alert = alert
         self.disaster_msg = disaster_msg
         self.disaster_level = disaster_level
+        self.my_apis = my_apis
         self.is_metric = "metric:v2"
         if hass.config.units is METRIC_SYSTEM:
             self.is_metric = "metric:v2"
         else:
             self.is_metric = "imperial"
 
-        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=TIME_BETWEEN_UPDATES)
-        self.my_apis = my_apis
+        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=datetime.timedelta(minutes=10))
 
     async def _async_update_data(self):
         try:
-            async with timeout(100):
+            async with timeout(20):
                 resdata = await self.my_apis(self.hass, self.api_version, self.longitude, self.latitude, self.api_key,
                                              self.dailysteps, self.hourlysteps, self.starttime, self.alert,
                                              self.disaster_msg, self.disaster_level)
@@ -135,7 +134,7 @@ class HfCoordinator(DataUpdateCoordinator):
 async def all_apis(hass, api_version, longitude, latitude, key, dailysteps, hourlysteps, starttime, alert, disaster_msg,
                    disaster_level):
     try:
-        async with timeout(50):
+        async with timeout(15):
             wdata = await weather_data_update(api_version, longitude, latitude, key, dailysteps, hourlysteps)
             wsdata = await weather_sensor_data_update(api_version, longitude, latitude, key, disaster_msg,
                                                       disaster_level, alert)
@@ -154,7 +153,7 @@ async def weather_data_update(api_version, longitude, latitude, key, dailysteps,
     params = {"location": f"{longitude}/{latitude}", "key": key}
     data = {}
     try:
-        timeout = aiohttp.ClientTimeout(total=20)
+        timeout = aiohttp.ClientTimeout(total=12)
         connector = aiohttp.TCPConnector(limit=10)
         async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
             async with session.get(weather_now_url) as response:
@@ -315,7 +314,7 @@ async def weather_sensor_data_update(api_version, longitude, latitude, key, disa
     params = {"location": f"{longitude}/{latitude}", "key": key, }
     place = None
     try:
-        timeout = aiohttp.ClientTimeout(total=20)
+        timeout = aiohttp.ClientTimeout(total=12)
         connector = aiohttp.TCPConnector(limit=10)
         async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
             async with session.get(weather_now_url) as response:
@@ -396,14 +395,12 @@ async def suggestion_data_update(hass, api_version, longitude, latitude, key, al
 
     try:
         session = async_get_clientsession(hass)
-        with async_timeout.timeout(15):
+        with async_timeout.timeout(10):
             response = await session.get(url)
     except Exception as e:
         raise e
     if response.status != 200:
-        _LOGGER.error("Error while accessing: %s, status=%d",
-                      url,
-                      response.status)
+        _LOGGER.error("Error while accessing: %s, status=%d", url, response.status)
         return
 
     result = await response.json()
