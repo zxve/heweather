@@ -37,7 +37,9 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             if user_input is not None:
                 # 若location则使用，否则使用user_input的经纬度
                 if user_input["location"] != 'None':
-                    lat, lon = self.hass.states.get(user_input["location"]).state.split(",")
+                    # lat, lon = self.hass.states.get(user_input["location"]).state.split(",")
+                    lat, lon = self.hass.states.get(user_input["location"]).attributes["location"].split(",")
+
                     user_input["latitude"] = lat.strip()[1:]
                     user_input["longitude"] = lon.strip()[:-1]
 
