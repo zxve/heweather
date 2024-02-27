@@ -36,7 +36,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         raise e
 
 
-class HfweatherEntity(WeatherEntity, CoordinatorEntity):
+class HfweatherEntity(CoordinatorEntity, WeatherEntity):
     """Representation of a weather condition."""
 
     _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
