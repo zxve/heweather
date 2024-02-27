@@ -1,11 +1,7 @@
 import asyncio
-import datetime
-
 import aiohttp
 import logging
-
 from async_timeout import timeout
-
 from homeassistant.const import CONF_API_KEY
 import async_timeout
 from homeassistant.core import Config, HomeAssistant
@@ -118,7 +114,7 @@ class HfCoordinator(DataUpdateCoordinator):
         else:
             self.is_metric = "imperial"
 
-        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=datetime.timedelta(minutes=60))
+        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=TIME_BETWEEN_UPDATES)
 
     async def _async_update_data(self):
         try:
