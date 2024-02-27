@@ -1,6 +1,7 @@
 import logging
+
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.device_registry import DeviceEntryType
-from homeassistant.helpers.entity import Entity
 from homeassistant.const import CONF_NAME, ATTR_ATTRIBUTION
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -31,7 +32,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         raise e
 
 
-class HfweatherSensor(Entity, CoordinatorEntity):
+class HfweatherSensor(SensorEntity, CoordinatorEntity):
     """定义一个温度传感器的类，继承自HomeAssistant的Entity类."""
 
     def __init__(self, name, option, coordinator, forecast_day=None):
