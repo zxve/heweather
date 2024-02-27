@@ -1,9 +1,8 @@
 import logging
 
-from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.const import CONF_NAME, ATTR_ATTRIBUTION
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.entity import Entity
 
 from .const import (
     ATTRIBUTION,
@@ -32,7 +31,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         raise e
 
 
-class HfweatherSensor(SensorEntity):
+class HfweatherSensor(Entity):
     """定义一个温度传感器的类，继承自HomeAssistant的Entity类."""
 
     def __init__(self, name, option, coordinator, forecast_day=None):
@@ -50,7 +49,7 @@ class HfweatherSensor(SensorEntity):
         self._unit_of_measurement = opobj[3] if self.coordinator.data["is_metric"] == "metric:v2" else opobj[4]
         self.forecast_day = forecast_day
         self._type = option
-        self._updatetime = None
+        self._updatetime = self.wsdata["updatetime"]
         self.location_key = coordinator.data["location_key"]
         # self._attr_unique_id = f"{coordinator.data['location_key']}-{self._type}"
         self._attr_unique_id = f"{self.location_key}-{self._type}".lower()  # 最好前面和weather对象保持一致，疑似需要
@@ -112,14 +111,14 @@ class HfweatherSensor(SensorEntity):
         """返回unit_of_measuremeng属性."""
         return self._unit_of_measurement
 
-    # @property
-    # def device_state_attributes(self):
-    #     """设置其它一些属性值."""
-    #     if self._state is not None:
-    #         return {
-    #             ATTR_ATTRIBUTION: ATTRIBUTION,
-    #             ATTR_UPDATE_TIME: self._updatetime
-    #         }
+    @property
+    def device_state_attributes(self):
+        """设置其它一些属性值."""
+        if self._state is not None:
+            return {
+                ATTR_ATTRIBUTION: ATTRIBUTION,
+                ATTR_UPDATE_TIME: self._updatetime
+            }
 
     @property
     def entity_registry_enabled_default(self):

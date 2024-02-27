@@ -9,7 +9,7 @@ from homeassistant.components.weather import (
     ATTR_FORECAST_NATIVE_WIND_SPEED
 )
 from homeassistant.const import (
-    CONF_NAME, UnitOfVolumetricFlux, UnitOfPressure, UnitOfSpeed, UnitOfLength, UnitOfTemperature,
+    CONF_NAME, UnitOfVolumetricFlux, UnitOfPressure, UnitOfSpeed, UnitOfLength, UnitOfTemperature, ATTR_ATTRIBUTION,
 )
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
@@ -17,7 +17,7 @@ from .const import (
     ATTRIBUTION,
     COORDINATOR,
     DOMAIN,
-    MANUFACTURER, CONDITION_CLASSES
+    MANUFACTURER, CONDITION_CLASSES, ATTR_UPDATE_TIME
 )
 
 PARALLEL_UPDATES = 1
@@ -51,7 +51,7 @@ class HfweatherEntity(WeatherEntity):
         self._object_id = 'localweather'
         self.coordinator = coordinator
         self.wdata = coordinator.data["wdata"]
-        self._updatetime = None
+        self._updatetime = self.wdata["updatetime"]
         self._attr_unique_id = coordinator.data["location_key"]
         self._attr_supported_features = 0
         self._attr_supported_features = WeatherEntityFeature.FORECAST_DAILY
@@ -152,14 +152,15 @@ class HfweatherEntity(WeatherEntity):
     #        """Return the attribution."""
     #        return 'Powered by Home Assistant'
 
-    #    @property
-    #    def device_state_attributes(self):
-    #        """设置其它一些属性值."""
-    #        if self._condition is not None:
-    #            return {
-    #                ATTR_ATTRIBUTION: ATTRIBUTION,
-    #                ATTR_UPDATE_TIME: self._updatetime
-    #            }
+    @property
+    def device_state_attributes(self):
+        """设置其它一些属性值."""
+        if self._condition is not None:
+            return {
+                ATTR_ATTRIBUTION: ATTRIBUTION,
+                ATTR_UPDATE_TIME: self._updatetime
+            }
+
     async def async_forecast_daily(self) -> list[Forecast]:
         """Return the daily forecast."""
         reftime = datetime.now()
