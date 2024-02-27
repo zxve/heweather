@@ -141,14 +141,14 @@ class HfweatherEntity(CoordinatorEntity, WeatherEntity):
         """Return the precipitation."""
         return self.wdata["precipitation"]
 
-    # @property
-    # def condition(self):
-    #     """Return the weather condition."""
-    #     if self.wdata["condition"]:
-    #         match_list = [k for k, v in CONDITION_CLASSES.items() if self.wdata["condition"] in v]
-    #         return match_list[0] if match_list else 'unknown'
-    #     else:
-    #         return 'unknown'
+    @property
+    def condition(self):
+        """Return the weather condition."""
+        if self.wdata["condition"]:
+            match_list = [k for k, v in CONDITION_CLASSES.items() if self.wdata["condition"] in v]
+            return match_list[0] if match_list else 'unknown'
+        else:
+            return 'unknown'
 
     #    @property
     #    def attribution(self):
@@ -163,10 +163,11 @@ class HfweatherEntity(CoordinatorEntity, WeatherEntity):
     #             ATTR_ATTRIBUTION: ATTRIBUTION,
     #             ATTR_UPDATE_TIME: self._updatetime
     #         }
-    @callback
-    def _handle_coordinator_update(self) -> None:
-        """Handle updated data from the coordinator."""
-        self._attr_condition = "多云"
+
+    # @callback
+    # def _handle_coordinator_update(self) -> None:
+    #     """Handle updated data from the coordinator."""
+    #     self._attr_condition = "多云"
 
     async def async_forecast_daily(self) -> list[Forecast]:
         """Return the daily forecast."""

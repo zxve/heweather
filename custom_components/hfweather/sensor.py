@@ -56,6 +56,7 @@ class HfweatherSensor(CoordinatorEntity, SensorEntity):
         self.location_key = coordinator.data["location_key"]
         # self._attr_unique_id = f"{coordinator.data['location_key']}-{self._type}"
         self._attr_unique_id = f"{self.location_key}-{self._type}".lower()  # 最好前面和weather对象保持一致，疑似需要
+        super().__init__(coordinator, context=None)
 
     # @property
     # def extra_state_attributes(self):
