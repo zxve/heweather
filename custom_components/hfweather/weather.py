@@ -36,7 +36,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         raise e
 
 
-class HfweatherEntity(CoordinatorEntity, WeatherEntity):
+class HfweatherEntity(WeatherEntity):
     """Representation of a weather condition."""
 
     _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
@@ -206,3 +206,6 @@ class HfweatherEntity(CoordinatorEntity, WeatherEntity):
         self.async_on_remove(
             self.coordinator.async_add_listener(self.async_write_ha_state)
         )
+
+    async def async_update(self):
+        await self.coordinator.async_request_refresh()

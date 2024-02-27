@@ -32,7 +32,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         raise e
 
 
-class HfweatherSensor(CoordinatorEntity, SensorEntity):
+class HfweatherSensor(SensorEntity):
     """定义一个温度传感器的类，继承自HomeAssistant的Entity类."""
 
     def __init__(self, name, option, coordinator, forecast_day=None):
@@ -129,6 +129,10 @@ class HfweatherSensor(CoordinatorEntity, SensorEntity):
         self.async_on_remove(
             self.coordinator.async_add_listener(self.async_write_ha_state)
         )
+
+    async def async_update(self):
+        await self.coordinator.async_request_refresh()
+
     # async def async_update(self):
     #     """update函数变成了async_update."""
     #     self._updatetime = self.wsdata["updatetime"]
