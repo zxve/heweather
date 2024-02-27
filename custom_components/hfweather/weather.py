@@ -27,8 +27,8 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     try:
         name = config_entry.data[CONF_NAME]
-
         coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
+
         _LOGGER.debug("metric: %s", coordinator.data["is_metric"])
 
         async_add_entities([HfweatherEntity(name, coordinator)], False)
@@ -82,14 +82,6 @@ class HfweatherEntity(CoordinatorEntity, WeatherEntity):
             "manufacturer": MANUFACTURER,
             "entry_type": DeviceEntryType.SERVICE
         }
-
-    # @property
-    # def should_poll(self):
-    #     return False
-    #
-    # @property
-    # def available(self):
-    #     return self.coordinator.last_update_success
 
     @property
     def native_dew_point(self):
@@ -210,11 +202,3 @@ class HfweatherEntity(CoordinatorEntity, WeatherEntity):
             forecast_hourly_data.append(data_dict)
 
         return forecast_hourly_data
-
-    # async def async_added_to_hass(self):
-    #     self.async_on_remove(
-    #         self.coordinator.async_add_listener(self.async_write_ha_state)
-    #     )
-    #
-    # async def async_update(self):
-    #     await self.coordinator.async_request_refresh()

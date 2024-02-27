@@ -1,14 +1,15 @@
 import logging
 
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.const import CONF_NAME, ATTR_ATTRIBUTION
-from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
     ATTRIBUTION,
     COORDINATOR,
     DOMAIN,
-    ATTR_UPDATE_TIME, OPTIONS,
+    OPTIONS,
     MANUFACTURER, ATTR_LABEL, OPTIONAL_SENSORS,
 )
 
@@ -31,11 +32,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         raise e
 
 
-class HfweatherSensor(Entity):
+class HfweatherSensor(CoordinatorEntity, SensorEntity):
     """定义一个温度传感器的类，继承自HomeAssistant的Entity类."""
 
     def __init__(self, name, option, coordinator, forecast_day=None):
         """初始化."""
+        self.coordinator_context = None
+
         self.coordinator = coordinator
         self.wsdata = coordinator.data["wsdata"]
         self.sdata = coordinator.data["sdata"]
@@ -102,14 +105,6 @@ class HfweatherSensor(Entity):
                 return self.sdata[self._type]
 
     @property
-    def should_poll(self):
-        return False
-
-    @property
-    def available(self):
-        return self.coordinator.last_update_success
-
-    @property
     def icon(self):
         """返回icon属性."""
         return self._icon
@@ -123,13 +118,10 @@ class HfweatherSensor(Entity):
     def entity_registry_enabled_default(self):
         return bool(self._type not in OPTIONAL_SENSORS)
 
-    async def async_added_to_hass(self):
-        self.async_on_remove(
-            self.coordinator.async_add_listener(self.async_write_ha_state)
-        )
-
-    async def async_update(self):
-        await self.coordinator.async_request_refresh()
+    # async def async_added_to_hass(self):
+    #     self.async_on_remove(
+    #         self.coordinator.async_add_listener(self.async_write_ha_state)
+    #     )
 
     # async def async_update(self):
     #     """update函数变成了async_update."""
