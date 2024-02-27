@@ -37,11 +37,15 @@ class HfweatherSensor(CoordinatorEntity, SensorEntity):
 
     def __init__(self, name, option, coordinator, forecast_day=None):
         """初始化."""
-        self.coordinator_context = None
+        _LOGGER.info("zxve 010")
 
         self.coordinator = coordinator
         self.wsdata = coordinator.data["wsdata"]
         self.sdata = coordinator.data["sdata"]
+        _LOGGER.info(self.wsdata)
+        _LOGGER.info("zxve 011")
+        _LOGGER.info(self.sdata)
+
         self.alert = coordinator.data.get("alert", True)
         opobj = OPTIONS[option]
         self._device_class = opobj[0] if opobj[0] else ''

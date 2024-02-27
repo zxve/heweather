@@ -53,6 +53,8 @@ class HfweatherEntity(CoordinatorEntity, WeatherEntity):
         self._object_id = 'localweather'
         self.coordinator = coordinator
         self.wdata = coordinator.data["wdata"]
+        _LOGGER.info(self.wdata)
+
         self._updatetime = self.wdata["updatetime"]
         self._attr_unique_id = coordinator.data["location_key"]
         self._attr_supported_features = 0
