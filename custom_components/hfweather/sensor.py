@@ -102,6 +102,14 @@ class HfweatherSensor(Entity):
                 return self.sdata[self._type]
 
     @property
+    def should_poll(self):
+        return False
+
+    @property
+    def available(self):
+        return self.coordinator.last_update_success
+
+    @property
     def icon(self):
         """返回icon属性."""
         return self._icon
@@ -110,15 +118,6 @@ class HfweatherSensor(Entity):
     def unit_of_measurement(self):
         """返回unit_of_measuremeng属性."""
         return self._unit_of_measurement
-
-    @property
-    def device_state_attributes(self):
-        """设置其它一些属性值."""
-        if self._state is not None:
-            return {
-                ATTR_ATTRIBUTION: ATTRIBUTION,
-                ATTR_UPDATE_TIME: self._updatetime
-            }
 
     @property
     def entity_registry_enabled_default(self):

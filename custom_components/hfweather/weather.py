@@ -84,6 +84,14 @@ class HfweatherEntity(WeatherEntity):
         }
 
     @property
+    def should_poll(self):
+        return False
+
+    @property
+    def available(self):
+        return self.coordinator.last_update_success
+
+    @property
     def native_dew_point(self):
         """Return the native_dew_point."""
         return self.wdata["dew"]
@@ -152,14 +160,14 @@ class HfweatherEntity(WeatherEntity):
     #        """Return the attribution."""
     #        return 'Powered by Home Assistant'
 
-    @property
-    def device_state_attributes(self):
-        """设置其它一些属性值."""
-        if self._condition is not None:
-            return {
-                ATTR_ATTRIBUTION: ATTRIBUTION,
-                ATTR_UPDATE_TIME: self._updatetime
-            }
+    # @property
+    # def device_state_attributes(self):
+    #     """设置其它一些属性值."""
+    #     if self._condition is not None:
+    #         return {
+    #             ATTR_ATTRIBUTION: ATTRIBUTION,
+    #             ATTR_UPDATE_TIME: self._updatetime
+    #         }
 
     async def async_forecast_daily(self) -> list[Forecast]:
         """Return the daily forecast."""
