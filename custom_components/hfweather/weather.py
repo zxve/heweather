@@ -201,3 +201,8 @@ class HfweatherEntity(CoordinatorEntity, WeatherEntity):
             forecast_hourly_data.append(data_dict)
 
         return forecast_hourly_data
+
+    async def async_added_to_hass(self):
+        self.async_on_remove(
+            self.coordinator.async_add_listener(self.async_write_ha_state)
+        )

@@ -125,6 +125,10 @@ class HfweatherSensor(CoordinatorEntity, SensorEntity):
     def entity_registry_enabled_default(self):
         return bool(self._type not in OPTIONAL_SENSORS)
 
+    async def async_added_to_hass(self):
+        self.async_on_remove(
+            self.coordinator.async_add_listener(self.async_write_ha_state)
+        )
     # async def async_update(self):
     #     """update函数变成了async_update."""
     #     self._updatetime = self.wsdata["updatetime"]
