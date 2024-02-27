@@ -1,4 +1,6 @@
 import asyncio
+import datetime
+
 import aiohttp
 import logging
 from async_timeout import timeout
@@ -15,7 +17,7 @@ from .const import (
     CONF_API_VERSION,
     COORDINATOR,
     DOMAIN,
-    UNDO_UPDATE_LISTENER, CONF_LOCATION, CONF_LONGITUDE, CONF_LATITUDE, PLATFORMS, TIME_BETWEEN_UPDATES,
+    UNDO_UPDATE_LISTENER, CONF_LOCATION, CONF_LONGITUDE, CONF_LATITUDE, PLATFORMS,
     CONDITION_CLASSES, DISASTER_LEVEL, CONF_DISASTER_MSG, CONF_DISASTER_LEVEL, CONF_DAILYSTEPS, CONF_HOURLYSTEPS,
     CONF_ALERT, CONF_STARTTIME,
 )
@@ -113,8 +115,10 @@ class HfCoordinator(DataUpdateCoordinator):
             self.is_metric = "metric:v2"
         else:
             self.is_metric = "imperial"
-
-        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=TIME_BETWEEN_UPDATES)
+        update_interval = (
+            datetime.timedelta(minutes=60)
+        )
+        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
 
     async def _async_update_data(self):
         try:

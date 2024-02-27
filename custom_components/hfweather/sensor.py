@@ -35,17 +35,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 class HfweatherSensor(CoordinatorEntity, SensorEntity):
     """定义一个温度传感器的类，继承自HomeAssistant的Entity类."""
 
-    def __init__(self, name, option, coordinator, forecast_day=None):
+    def __init__(self, name, option, coordinator):
         """初始化."""
-        _LOGGER.info("zxve 010")
-
         self.coordinator = coordinator
         self.wsdata = coordinator.data["wsdata"]
         self.sdata = coordinator.data["sdata"]
-        _LOGGER.info(self.wsdata)
-        _LOGGER.info("zxve 011")
-        _LOGGER.info(self.sdata)
-
         self.alert = coordinator.data.get("alert", True)
         opobj = OPTIONS[option]
         self._device_class = opobj[0] if opobj[0] else ''
@@ -54,7 +48,6 @@ class HfweatherSensor(CoordinatorEntity, SensorEntity):
         self._icon = opobj[2]
         self._attrs = {ATTR_ATTRIBUTION: ATTRIBUTION}
         self._unit_of_measurement = opobj[3] if self.coordinator.data["is_metric"] == "metric:v2" else opobj[4]
-        self.forecast_day = forecast_day
         self._type = option
         self._updatetime = self.wsdata["updatetime"]
         self.location_key = coordinator.data["location_key"]
@@ -69,12 +62,7 @@ class HfweatherSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def name(self):
-        """返回实体的名字."""
-        """Return the name."""
-        if self.forecast_day is not None:
-            return f"{self._name} {FORECAST_SENSOR_TYPES[self.kind][ATTR_LABEL]} {self.forecast_day}d"
-        # return f"{self._name} {OPTIONS[self._type][1]}"
-        return f"{self._name}"
+        return self._name
 
     # @property
     # def attribution(self):
