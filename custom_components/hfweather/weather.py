@@ -1,6 +1,7 @@
 import logging
 from datetime import timedelta, datetime
 
+from homeassistant.core import callback
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.components.weather import (
     WeatherEntity,
@@ -47,8 +48,7 @@ class HfweatherEntity(CoordinatorEntity, WeatherEntity):
 
     def __init__(self, name, coordinator):
         """Initialize the  weather."""
-        self.coordinator_context = None
-
+        _LOGGER.info("zxve 000")
         self._name = name
         self._object_id = 'localweather'
         self.coordinator = coordinator
@@ -58,6 +58,7 @@ class HfweatherEntity(CoordinatorEntity, WeatherEntity):
         self._attr_supported_features = 0
         self._attr_supported_features = WeatherEntityFeature.FORECAST_DAILY
         self._attr_supported_features |= WeatherEntityFeature.FORECAST_HOURLY
+        super().__init__(coordinator, context=None)
 
     @property
     def name(self):
@@ -140,14 +141,14 @@ class HfweatherEntity(CoordinatorEntity, WeatherEntity):
         """Return the precipitation."""
         return self.wdata["precipitation"]
 
-    @property
-    def condition(self):
-        """Return the weather condition."""
-        if self.wdata["condition"]:
-            match_list = [k for k, v in CONDITION_CLASSES.items() if self.wdata["condition"] in v]
-            return match_list[0] if match_list else 'unknown'
-        else:
-            return 'unknown'
+    # @property
+    # def condition(self):
+    #     """Return the weather condition."""
+    #     if self.wdata["condition"]:
+    #         match_list = [k for k, v in CONDITION_CLASSES.items() if self.wdata["condition"] in v]
+    #         return match_list[0] if match_list else 'unknown'
+    #     else:
+    #         return 'unknown'
 
     #    @property
     #    def attribution(self):
@@ -162,6 +163,10 @@ class HfweatherEntity(CoordinatorEntity, WeatherEntity):
     #             ATTR_ATTRIBUTION: ATTRIBUTION,
     #             ATTR_UPDATE_TIME: self._updatetime
     #         }
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        self._attr_condition = "多云"
 
     async def async_forecast_daily(self) -> list[Forecast]:
         """Return the daily forecast."""
