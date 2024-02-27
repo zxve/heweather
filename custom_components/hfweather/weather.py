@@ -17,10 +17,10 @@ from .const import (
     ATTRIBUTION,
     COORDINATOR,
     DOMAIN,
-    MANUFACTURER, CONDITION_CLASSES, ATTR_UPDATE_TIME
+    MANUFACTURER, CONDITION_CLASSES
 )
 
-PARALLEL_UPDATES = 1
+# PARALLEL_UPDATES = 1
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -36,7 +36,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         raise e
 
 
-class HfweatherEntity(WeatherEntity):
+class HfweatherEntity(CoordinatorEntity, WeatherEntity):
     """Representation of a weather condition."""
 
     _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
@@ -83,13 +83,13 @@ class HfweatherEntity(WeatherEntity):
             "entry_type": DeviceEntryType.SERVICE
         }
 
-    @property
-    def should_poll(self):
-        return False
-
-    @property
-    def available(self):
-        return self.coordinator.last_update_success
+    # @property
+    # def should_poll(self):
+    #     return False
+    #
+    # @property
+    # def available(self):
+    #     return self.coordinator.last_update_success
 
     @property
     def native_dew_point(self):
@@ -183,7 +183,7 @@ class HfweatherEntity(WeatherEntity):
                     ATTR_FORECAST_NATIVE_TEMP_LOW: entry[2],
                     'text': entry[3]
                 }
-                reftime = reftime + timedelta(days=1)
+                reftime += timedelta(days=1)
                 forecast_data.append(data_dict)
 
         return forecast_data
@@ -206,15 +206,15 @@ class HfweatherEntity(WeatherEntity):
                 'text': entry[7]
             }
 
-            reftime = reftime + timedelta(hours=1)
+            reftime += timedelta(hours=1)
             forecast_hourly_data.append(data_dict)
 
         return forecast_hourly_data
 
-    async def async_added_to_hass(self):
-        self.async_on_remove(
-            self.coordinator.async_add_listener(self.async_write_ha_state)
-        )
-
-    async def async_update(self):
-        await self.coordinator.async_request_refresh()
+    # async def async_added_to_hass(self):
+    #     self.async_on_remove(
+    #         self.coordinator.async_add_listener(self.async_write_ha_state)
+    #     )
+    #
+    # async def async_update(self):
+    #     await self.coordinator.async_request_refresh()
