@@ -2,6 +2,7 @@ import logging
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.helpers.entity import Entity
 from homeassistant.const import CONF_NAME, ATTR_ATTRIBUTION
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
     ATTRIBUTION,
@@ -30,7 +31,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         raise e
 
 
-class HfweatherSensor(Entity):
+class HfweatherSensor(Entity, CoordinatorEntity):
     """定义一个温度传感器的类，继承自HomeAssistant的Entity类."""
 
     def __init__(self, name, option, coordinator, forecast_day=None):
@@ -51,7 +52,7 @@ class HfweatherSensor(Entity):
         self._updatetime = None
         self.location_key = coordinator.data["location_key"]
         # self._attr_unique_id = f"{coordinator.data['location_key']}-{self._type}"
-        self._attr_unique_id = f"{self.location_key}-{self._type}".lower() # 最好前面和weather对象保持一致，疑似需要
+        self._attr_unique_id = f"{self.location_key}-{self._type}".lower()  # 最好前面和weather对象保持一致，疑似需要
 
     # @property
     # def extra_state_attributes(self):
@@ -93,16 +94,6 @@ class HfweatherSensor(Entity):
         }
 
     @property
-    def should_poll(self):
-        """Return the polling requirement of the entity."""
-        return False
-
-    @property
-    def available(self):
-        """Return True if entity is available."""
-        return self.coordinator.last_update_success
-
-    @property
     def state(self):
         if self.alert:
             if self._type in self.wsdata:
@@ -132,14 +123,6 @@ class HfweatherSensor(Entity):
     @property
     def entity_registry_enabled_default(self):
         return bool(self._type not in OPTIONAL_SENSORS)
-
-    async def async_added_to_hass(self):
-        self.async_on_remove(
-            self.coordinator.async_add_listener(self.async_write_ha_state)
-        )
-
-    async def async_update(self):
-        await self.coordinator.async_request_refresh()
 
     # async def async_update(self):
     #     """update函数变成了async_update."""
