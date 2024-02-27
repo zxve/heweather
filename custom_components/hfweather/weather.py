@@ -47,6 +47,8 @@ class HfweatherEntity(CoordinatorEntity, WeatherEntity):
 
     def __init__(self, name, coordinator):
         """Initialize the  weather."""
+        self.coordinator_context = None
+
         self._name = name
         self._object_id = 'localweather'
         self.coordinator = coordinator
