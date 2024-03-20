@@ -19,7 +19,7 @@ from .const import (
     DOMAIN,
     UNDO_UPDATE_LISTENER, CONF_LOCATION, CONF_LONGITUDE, CONF_LATITUDE, PLATFORMS,
     CONDITION_CLASSES, DISASTER_LEVEL, CONF_DISASTER_MSG, CONF_DISASTER_LEVEL, CONF_DAILYSTEPS, CONF_HOURLYSTEPS,
-    CONF_ALERT, CONF_STARTTIME,
+    CONF_ALERT, CONF_STARTTIME, TIME_BETWEEN_UPDATES,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -115,10 +115,7 @@ class HfCoordinator(DataUpdateCoordinator):
             self.is_metric = "metric:v2"
         else:
             self.is_metric = "imperial"
-        update_interval = (
-            datetime.timedelta(minutes=60)
-        )
-        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
+        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=TIME_BETWEEN_UPDATES)
 
     async def _async_update_data(self):
         try:
