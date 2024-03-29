@@ -31,13 +31,6 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     try:
         name = config_entry.data[CONF_NAME]
-        coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
-
-        _LOGGER.debug("metric: %s", coordinator.data["is_metric"])
-
-        async_add_entities([HfweatherEntity(name, coordinator)], False)
-
-        name = config_entry.data[CONF_NAME]
         location = config_entry.data[CONF_LOCATION]
         location_key = config_entry.unique_id
         api_key = config_entry.data[CONF_API_KEY]
