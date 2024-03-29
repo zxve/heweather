@@ -59,7 +59,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         raise e
 
 
-class HfweatherSensor(CoordinatorEntity, SensorEntity):
+class HfweatherSensor(SensorEntity):
     """定义一个温度传感器的类，继承自HomeAssistant的Entity类."""
 
     def __init__(self, name, option, coordinator):
