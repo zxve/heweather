@@ -56,7 +56,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         raise e
 
 
-class HfweatherEntity(CoordinatorEntity, WeatherEntity):
+class HfweatherEntity(WeatherEntity):
     """Representation of a weather condition."""
 
     _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
@@ -71,14 +71,13 @@ class HfweatherEntity(CoordinatorEntity, WeatherEntity):
         self._name = name
         self._object_id = 'localweather'
         self.coordinator = coordinator
-        self.wdata = coordinator.data["wdata"]
-        _LOGGER.info(self.coordinator.data)
+        self.wdata = coordinator["wdata"]
+        _LOGGER.info(self.coordinator)
         self._updatetime = self.wdata["updatetime"]
-        self._attr_unique_id = coordinator.data["location_key"]
+        self._attr_unique_id = coordinator["location_key"]
         self._attr_supported_features = 0
         self._attr_supported_features = WeatherEntityFeature.FORECAST_DAILY
         self._attr_supported_features |= WeatherEntityFeature.FORECAST_HOURLY
-        super().__init__(coordinator, context=None)
 
     @property
     def name(self):

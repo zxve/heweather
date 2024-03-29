@@ -65,9 +65,9 @@ class HfweatherSensor(CoordinatorEntity, SensorEntity):
     def __init__(self, name, option, coordinator):
         """初始化."""
         self.coordinator = coordinator
-        self.wsdata = coordinator.data["wsdata"]
-        self.sdata = coordinator.data["sdata"]
-        self.alert = coordinator.data.get("alert", True)
+        self.wsdata = coordinator["wsdata"]
+        self.sdata = coordinator["sdata"]
+        self.alert = coordinator.get("alert", True)
         opobj = OPTIONS[option]
         self._device_class = opobj[0] if opobj[0] else ''
         # self._name = name
@@ -77,10 +77,9 @@ class HfweatherSensor(CoordinatorEntity, SensorEntity):
         self._unit_of_measurement = opobj[3] if self.coordinator.data["is_metric"] == "metric:v2" else opobj[4]
         self._type = option
         self._updatetime = self.wsdata["updatetime"]
-        self.location_key = coordinator.data["location_key"]
+        self.location_key = coordinator["location_key"]
         # self._attr_unique_id = f"{coordinator.data['location_key']}-{self._type}"
         self._attr_unique_id = f"{self.location_key}-{self._type}".lower()  # 最好前面和weather对象保持一致，疑似需要
-        super().__init__(coordinator, context=None)
 
     # @property
     # def extra_state_attributes(self):
