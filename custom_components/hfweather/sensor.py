@@ -1,16 +1,23 @@
 import logging
+import aiohttp
+
+import async_timeout
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.const import CONF_NAME, ATTR_ATTRIBUTION
+from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.util.unit_system import METRIC_SYSTEM
 
 from .const import (
     ATTRIBUTION,
     COORDINATOR,
     DOMAIN,
     OPTIONS,
-    MANUFACTURER, ATTR_LABEL, OPTIONAL_SENSORS,
+    MANUFACTURER, DISASTER_LEVEL, OPTIONAL_SENSORS, TIME_BETWEEN_UPDATES, CONF_API_KEY, CONF_API_VERSION,
+    CONF_LONGITUDE, CONF_LATITUDE, CONF_DISASTER_MSG, CONF_DISASTER_LEVEL, CONF_ALERT
 )
 
 # PARALLEL_UPDATES = 1
@@ -20,12 +27,32 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     try:
         name = config_entry.data[CONF_NAME]
+        api_key = config_entry.data[CONF_API_KEY]
+        api_version = config_entry.data[CONF_API_VERSION]
+        longitude = config_entry.data[CONF_LONGITUDE]
+        latitude = config_entry.data[CONF_LATITUDE]
+        disaster_msg = config_entry.options.get(CONF_DISASTER_MSG, "title")
+        disaster_level = config_entry.options.get(CONF_DISASTER_LEVEL, 1)
+        alert = config_entry.options.get(CONF_ALERT, True)
+        location_key = config_entry.unique_id
+        is_metric = "metric:v2"
+        if hass.config.units is METRIC_SYSTEM:
+            is_metric = "metric:v2"
+        else:
+            is_metric = "imperial"
 
-        coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
+        wsdata = await weather_sensor_data_update(api_version, longitude, latitude, api_key, disaster_msg,
+                                                  disaster_level, alert)
+        async_track_time_interval(hass, weather_sensor_data_update, TIME_BETWEEN_UPDATES)
+
+        sdata = await suggestion_data_update(hass, api_version, longitude, latitude, api_key, alert)
+        async_track_time_interval(hass, suggestion_data_update, TIME_BETWEEN_UPDATES)
 
         sensors = []
         for sensor in OPTIONS.keys():
-            sensors.append(HfweatherSensor(name, sensor, coordinator))
+            sensors.append(HfweatherSensor(name, sensor,
+                                           {"location_key": location_key, "is_metric": is_metric, "wsdata": wsdata,
+                                            "sdata": sdata}))
 
         async_add_entities(sensors, False)
     except Exception as e:
@@ -213,3 +240,161 @@ class HfweatherSensor(CoordinatorEntity, SensorEntity):
     #     elif self._type == "jiaotong":
     #         self._state = self.sdata["jiaotong"][0]
     #         self._attributes["states"] = self.sdata["jiaotong"][1]
+
+
+async def weather_sensor_data_update(api_version, longitude, latitude, key, disaster_msg, disaster_level, alert):
+    if not alert:
+        return {"alert": False}
+    data = {}
+
+    weather_now_url = f"https://devapi.qweather.com/{api_version}/weather/now?location={longitude},{latitude}&key={key}"
+    air_now_url = f"https://devapi.qweather.com/{api_version}/air/now?location={longitude},{latitude}&key={key}"
+    disaster_warn_url = f"https://devapi.qweather.com/{api_version}/warning/now?location={longitude},{latitude}&key={key}"
+    params = {"location": f"{longitude}/{latitude}", "key": key, }
+    place = None
+    try:
+        timeout = aiohttp.ClientTimeout(total=12)
+        connector = aiohttp.TCPConnector(limit=10)
+        async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
+            async with session.get(weather_now_url) as response:
+                json_data = await response.json()
+                weather = json_data["now"]
+                place = json_data["fxLink"].split("/")[-1].split("-")[0]
+            async with session.get(air_now_url) as response:
+                json_data = await response.json()
+                air = json_data["now"]
+            async with session.get(disaster_warn_url) as response:
+                json_data = await response.json()
+                disaster_warn = json_data["warning"]
+    except Exception as e:
+        raise e
+
+    # 根据http返回的结果，更新数据
+    data["temperature"] = weather["temp"]
+    data["humidity"] = weather["humidity"]
+    data["feelsLike"] = weather["feelsLike"]
+    data["text"] = weather["text"]
+    data["windDir"] = weather["windDir"]
+    data["windScale"] = weather["windScale"]
+    data["windSpeed"] = weather["windSpeed"]
+    data["precip"] = weather["precip"]
+    data["pressure"] = weather["pressure"]
+    data["vis"] = weather["vis"]
+    data["cloud"] = weather["cloud"]
+    data["dew"] = weather["dew"]
+    data["place"] = place
+    data["updatetime"] = weather["obsTime"]
+    data["category"] = air["category"]
+    data["pm25"] = air["pm2p5"]
+    data["pm10"] = air["pm10"]
+    data["primary"] = air["primary"]
+    data["level"] = air["level"]
+    data["no2"] = air["no2"]
+    data["so2"] = air["so2"]
+    data["co"] = air["co"]
+    data["o3"] = air["o3"]
+    data["qlty"] = air["aqi"]
+
+    allmsg = ''
+    titlemsg = ''
+    for i in disaster_warn:
+        # if DISASTER_LEVEL[i["severity"]] >= 订阅等级:
+        if DISASTER_LEVEL[i["severity"]] >= int(disaster_level):
+            allmsg = f'{allmsg}{i["title"]}:{i["text"]}||'
+            titlemsg = f'{titlemsg}{i["title"]}||'
+
+    if len(titlemsg) < 5:
+        disaster_warn = f'近日无{disaster_level}级及以上灾害'
+    # if(订阅标题)
+    elif disaster_msg == 'title':
+        disaster_warn = titlemsg
+    else:
+        disaster_warn = allmsg
+    data["disaster_warn"] = disaster_warn
+    return data
+
+
+async def suggestion_data_update(hass, api_version, longitude, latitude, key, alert):
+    if not alert:
+        return {"alert": False}
+
+    url = f"https://devapi.qweather.com/{api_version}/indices/1d?location={longitude},{latitude}&key={key}&type=0"
+    params = {"location": f"{longitude}/{latitude}", "key": key, "type": 0}
+    updatetime = ["1", "1"]
+    data = {
+        "air": ["1", "1"],
+        "comf": ["1", "1"],
+        "cw": ["1", "1"],
+        "drsg": ["1", "1"],
+        "flu": ["1", "1"],
+        "sport": ["1", "1"],
+        "trav": ["1", "1"],
+        "uv": ["1", "1"],
+    }
+
+    try:
+        session = async_get_clientsession(hass)
+        with async_timeout.timeout(10):
+            response = await session.get(url)
+    except Exception as e:
+        raise e
+    if response.status != 200:
+        _LOGGER.error("Error while accessing: %s, status=%d", url, response.status)
+        return
+
+    result = await response.json()
+
+    if result is None:
+        _LOGGER.error("Request api Error")
+        return
+    elif result["code"] != "200":
+        _LOGGER.error("Error API return, code=%s,url=%s",
+                      result["code"], url)
+        return
+
+    # 根据http返回的结果，更新数据
+    all_result = result["daily"]
+    updatetime = result["updateTime"]
+    for i in all_result:
+        if i["type"] == "1":
+            data["sport"] = [i["category"], i["text"]]
+
+        if i["type"] == "10":
+            data["air"] = [i["category"], i["text"]]
+
+        if i["type"] == "8":
+            data["comf"] = [i["category"], i["text"]]
+
+        if i["type"] == "2":
+            data["cw"] = [i["category"], i["text"]]
+
+        if i["type"] == "3":
+            data["drsg"] = [i["category"], i["text"]]
+
+        if i["type"] == "9":
+            data["flu"] = [i["category"], i["text"]]
+
+        if i["type"] == "6":
+            data["trav"] = [i["category"], i["text"]]
+
+        if i["type"] == "5":
+            data["uv"] = [i["category"], i["text"]]
+
+        if i["type"] == "7":
+            data["guomin"] = [i["category"], i["text"]]
+
+        if i["type"] == "11":
+            data["kongtiao"] = [i["category"], i["text"]]
+
+        if i["type"] == "12":
+            data["sunglass"] = [i["category"], i["text"]]
+
+        if i["type"] == "14":
+            data["liangshai"] = [i["category"], i["text"]]
+
+        if i["type"] == "15":
+            data["jiaotong"] = [i["category"], i["text"]]
+
+        if i["type"] == "16":
+            data["fangshai"] = [i["category"], i["text"]]
+    return data
