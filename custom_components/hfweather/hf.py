@@ -61,7 +61,7 @@ class HfCoordinator(DataUpdateCoordinator):
             self.is_metric = "imperial"
 
         update_interval = datetime.timedelta(minutes=self.interval)
-        _LOGGER.info("update data every %s", update_interval)
+        _LOGGER.info("hew- update data every %s", update_interval)
 
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=update_interval)
 
@@ -77,7 +77,7 @@ class HfCoordinator(DataUpdateCoordinator):
             sgdata = await suggestion_data_update(self.hass, data_source, self.alert)
             wdata = await weather_data_update(data_source)
         except ClientConnectorError as error:
-            _LOGGER.info("HfCoordinator update: %s", error)
+            _LOGGER.info("hew- HfCoordinator update: %s", error)
             raise UpdateFailed(error)
         return {
             "wsdata": wsdata,
@@ -114,7 +114,7 @@ async def weather_sensor_data_update(data_source, disaster_msg, disaster_level):
                 json_data = await response.json()
                 disaster_warn = json_data["warning"]
     except Exception as e:
-        _LOGGER.info("weather sensor update: %s", e)
+        _LOGGER.info("hew- weather sensor update: %s", e)
         raise e
 
     # 根据http返回的结果，更新数据
@@ -187,7 +187,7 @@ async def suggestion_data_update(hass, data_source, alert):
     except Exception as e:
         raise e
     if response.status != 200:
-        _LOGGER.info("Error while accessing: %s, status=%d", url, response.status)
+        _LOGGER.info("hew- Error while accessing: %s, status=%d", url, response.status)
         return
 
     result = await response.json()
@@ -196,7 +196,7 @@ async def suggestion_data_update(hass, data_source, alert):
         _LOGGER.error("Request api Error")
         return
     elif result["code"] != "200":
-        _LOGGER.info("Error API return, code=%s,url=%s",
+        _LOGGER.info("hew- Error API return, code=%s,url=%s",
                       result["code"], url)
         return
 
@@ -270,7 +270,7 @@ async def weather_data_update(data_source):
                 forecast_hourly = json_data
 
     except Exception as e:
-        _LOGGER.info("weather data update: %s", e)
+        _LOGGER.info("hew- weather data update: %s", e)
         raise e
 
     data["temperature"] = float(weather["temp"])

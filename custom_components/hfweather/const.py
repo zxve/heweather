@@ -54,7 +54,7 @@ CONF_STARTTIME = "starttime"
 
 UNDO_UPDATE_LISTENER = "undo_update_listener"
 CONF_INTERVAL = "interval"
-TIME_BETWEEN_UPDATES = timedelta(minutes=10)
+TIME_BETWEEN_UPDATES = timedelta(minutes=120)
 
 DEFAULT_TIME = dt_util.now()
 CONF_OPTIONS = "options"

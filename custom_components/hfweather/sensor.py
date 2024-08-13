@@ -40,7 +40,7 @@ class HfweatherSensor(SensorEntity):
     def __init__(self, name, sensor, alert, coordinator):
         """初始化."""
         self.wsdata = coordinator.data["wsdata"]
-        self.sdata = coordinator.data["sdata"]
+        self.sgdata = coordinator.data["sgdata"]
         self.coordinator = coordinator
         self.alert = alert
         opobj = OPTIONS[sensor]
@@ -94,9 +94,9 @@ class HfweatherSensor(SensorEntity):
         """xxx"""
         if self._type in self.wsdata:
             return self.wsdata[self._type]
-        elif self._type in self.sdata:
+        elif self._type in self.sgdata:
             if self.alert:
-                return self.sdata[self._type]
+                return self.sgdata[self._type]
 
     @property
     def icon(self):

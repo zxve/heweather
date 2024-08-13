@@ -68,7 +68,7 @@ class HfweatherEntity(WeatherEntity):
         self._object_id = 'localweather'
         self.wdata = coordinator.data["wdata"]
         self.coordinator = coordinator
-        _LOGGER.info("hew- coordinator:{coordinator.data}")
+        _LOGGER.info("hew- coordinator:%s", coordinator.data)
         self._updatetime = self.wdata["updatetime"]
         self._attr_unique_id = coordinator.data["location_key"]
         self._attr_supported_features = 0
@@ -213,7 +213,7 @@ class HfweatherEntity(WeatherEntity):
                 reftime += timedelta(days=1)
                 forecast_data.append(data_dict)
 
-        _LOGGER.info("hew- forecast_data:{forecast_data}")
+        _LOGGER.info("hew- forecast_data:%s", forecast_data)
         return forecast_data
 
     async def async_forecast_hourly(self) -> list[Forecast]:
@@ -237,6 +237,6 @@ class HfweatherEntity(WeatherEntity):
             reftime += timedelta(hours=1)
             forecast_hourly_data.append(data_dict)
 
-        _LOGGER.info("hew- forecast_hourly_data:{forecast_hourly_data}")
+        _LOGGER.info("hew- forecast_hourly_data:%s", forecast_hourly_data)
 
         return forecast_hourly_data
