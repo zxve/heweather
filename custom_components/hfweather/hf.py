@@ -69,7 +69,8 @@ class HfCoordinator(DataUpdateCoordinator):
         """Update data via library."""
         try:
             data_source = DataSourceUrl(api_version=self.api_version, longitude=self.longitude,
-                                        latitude=self.latitude, api_key=self.api_key)
+                                        latitude=self.latitude, api_key=self.api_key,
+                                        dailysteps=self.dailysteps, hourlysteps=self.hourlysteps)
 
             wsdata = await weather_sensor_data_update(data_source, self.disaster_msg,
                                                       self.disaster_level)

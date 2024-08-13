@@ -175,9 +175,9 @@ class DataSourceUrl:
         self.dailysteps = dailysteps
         self.hourlysteps = hourlysteps
 
-        self.forecast_url = f"{weather}{dailysteps}d?location={longitude},{latitude}&key={api_key}"
+        self.forecast_url = f"{weather}{dailysteps}?location={longitude},{latitude}&key={api_key}"
         self.weather_now_url = f"{weather}now?location={longitude},{latitude}&key={api_key}"
-        self.forecast_hourly_url = f"{weather}{hourlysteps}h?location={longitude},{latitude}&key={api_key}"
+        self.forecast_hourly_url = f"{weather}{hourlysteps}?location={longitude},{latitude}&key={api_key}"
         self.air_now_url = f"{air}now?location={longitude},{latitude}&key={api_key}"
         self.disaster_warn_url = f"{warning}now?location={longitude},{latitude}&key={api_key}"
         self.suggestion_url = f"{indices}1d?location={longitude},{latitude}&key={api_key}&type=0"
