@@ -319,7 +319,7 @@ async def weather_data_update(data_source):
                 hourly_tmp.append(
                     [i, float(hourlymsg[n]["temp"]), float(hourlymsg[n]["humidity"]),
                      float(hourlymsg[n]["precip"]), hourlymsg[n]["windDir"],
-                     int(hourlymsg[n]["windSpeed"]), float(hourlymsg[n]["pop"]), 
+                     int(hourlymsg[n]["windSpeed"]), float(hourlymsg[n]["pop"]),
                      hourlymsg[n]["text"]
                      ]
                 )

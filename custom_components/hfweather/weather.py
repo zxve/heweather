@@ -238,4 +238,3 @@ class HfweatherEntity(WeatherEntity):
             forecast_hourly_data.append(data_dict)
 
         return forecast_hourly_data
-
