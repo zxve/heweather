@@ -86,7 +86,7 @@ class HfweatherEntity(WeatherEntity):
     def should_poll(self):
         """Return the polling requirement of the entity."""
         return False
-    
+
     @property
     def attribution(self):
         """Return the attribution."""
