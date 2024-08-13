@@ -1,22 +1,38 @@
-import logging
-
-import requests
+'''
+输入参数配置
+'''
 import json
-import homeassistant.helpers.config_validation as cv
-from homeassistant.const import CONF_API_KEY, CONF_LATITUDE, CONF_LONGITUDE, CONF_NAME, CONF_SENSORS
+import logging
 from collections import OrderedDict
-from homeassistant import config_entries
-from homeassistant.core import callback
-from .const import (
-    DOMAIN, NAME, CONF_ALERT, CONF_DISASTER_LEVEL, CONF_DISASTER_MSG, CONF_DAILYSTEPS, CONF_HOURLYSTEPS, CONF_STARTTIME
-)
+
+import homeassistant.helpers.config_validation as cv
+import requests
 import voluptuous as vol
+from homeassistant import config_entries
+from homeassistant.const import (
+    CONF_API_KEY,
+    CONF_LATITUDE,
+    CONF_LONGITUDE,
+    CONF_NAME,
+)
+from homeassistant.core import callback
+
+from .const import (
+    CONF_ALERT,
+    CONF_DAILYSTEPS,
+    CONF_DISASTER_LEVEL,
+    # CONF_DISASTER_MSG,
+    CONF_HOURLYSTEPS,
+    CONF_STARTTIME,
+    DOMAIN, NAME
+)
 
 _LOGGER = logging.getLogger(__name__)
 
 
 @config_entries.HANDLERS.register(DOMAIN)
 class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
+    """xxx"""
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
@@ -27,7 +43,8 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     # @asyncio.coroutine
     def get_data(self, url):
-        json_text = requests.get(url).content
+        """xxx"""
+        json_text = requests.get(url, timeout=100).content
         resdata = json.loads(json_text)
         return resdata
 
@@ -46,9 +63,12 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 if existing:
                     return self.async_abort(reason="already_configured")
 
-                url = str.format("https://devapi.qweather.com/{}/weather/now?location={},{}&key={}",
-                                 user_input["api_version"],
-                                 user_input["longitude"], user_input["latitude"], user_input["api_key"])
+                url = str.format(
+                    "https://devapi.qweather.com/{}/weather/now?location={},{}&key={}",
+                    user_input["api_version"],
+                    user_input["longitude"],
+                    user_input["latitude"],
+                    user_input["api_key"])
                 redata = await self.hass.async_add_executor_job(self.get_data, url)
                 status = redata['code']
                 if status == '200':
@@ -70,13 +90,14 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     async def _show_config_form(self, user_input):
         try:
-            api_version = "v7"
             data_schema = OrderedDict()
             data_schema[vol.Required(CONF_API_KEY)] = str
             data_schema[vol.Optional("location", default="sensor.xxx_geocoded_location")] = str
-            data_schema[vol.Optional("api_version", default=api_version)] = str
-            data_schema[vol.Optional(CONF_LONGITUDE, default=self.hass.config.longitude)] = cv.longitude
-            data_schema[vol.Optional(CONF_LATITUDE, default=self.hass.config.latitude)] = cv.latitude
+            data_schema[vol.Optional("api_version", default="v7")] = str
+            data_schema[vol.Optional(CONF_LONGITUDE,
+                                     default=self.hass.config.longitude)] = cv.longitude
+            data_schema[vol.Optional(CONF_LATITUDE,
+                                     default=self.hass.config.latitude)] = cv.latitude
             # data_schema[vol.Optional(CONF_DISASTER_LEVEL, default=1)] = int
             # data_schema[vol.Optional(CONF_DISASTER_MSG, default="注意")] = str
 
@@ -88,6 +109,7 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             raise e
 
     async def async_step_import(self, user_input):
+        """xxx"""
         if self._async_current_entries():
             return self.async_abort(reason="single_instance_allowed")
 
@@ -100,14 +122,16 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class HfweatherOptionsFlow(config_entries.OptionsFlow):
-
+    """xxx"""
     def __init__(self, config_entry):
         self.config_entry = config_entry
 
     async def async_step_init(self, user_input=None):
+        """xxx"""
         return await self.async_step_user()
 
     async def async_step_user(self, user_input=None):
+        """xxx"""
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 
@@ -117,7 +141,7 @@ class HfweatherOptionsFlow(config_entries.OptionsFlow):
                 {
                     vol.Optional(
                         CONF_DAILYSTEPS,
-                        default=self.config_entry.options.get(CONF_DAILYSTEPS, 3),
+                        default=self.config_entry.options.get(CONF_DAILYSTEPS, 7),
                     ): vol.All(vol.Coerce(int), vol.Range(min=3, max=7)),
                     vol.Optional(
                         CONF_HOURLYSTEPS,
@@ -129,11 +153,11 @@ class HfweatherOptionsFlow(config_entries.OptionsFlow):
                     ): vol.All(vol.Coerce(int), vol.Range(min=-5, max=0)),
                     vol.Optional(
                         CONF_ALERT,
-                        default=self.config_entry.options.get(CONF_ALERT, True),
+                        default=self.config_entry.options.get(CONF_ALERT, False),
                     ): bool,
                     vol.Optional(
                         CONF_DISASTER_LEVEL,
-                        default=self.config_entry.options.get(CONF_DISASTER_LEVEL, 24),
+                        default=self.config_entry.options.get(CONF_DISASTER_LEVEL, 0),
                     ): vol.All(vol.Coerce(int), vol.Range(min=0, max=6)),
                     # vol.Optional(
                     #     CONF_DISASTER_MSG,

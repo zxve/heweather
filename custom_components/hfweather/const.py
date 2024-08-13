@@ -1,14 +1,14 @@
+'''
+常量配置项
+'''
 from datetime import timedelta
 import homeassistant.util.dt as dt_util
 
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.const import (
-    UnitOfLength,
-    UnitOfTemperature,
-    DEGREE, UnitOfSpeed,
-    CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-    PERCENTAGE,
-    WIND_SPEED, UnitOfPressure, CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT, UnitOfVolumetricFlux,
+    UnitOfLength, UnitOfTemperature, DEGREE, UnitOfSpeed,
+    CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, PERCENTAGE,
+    WIND_SPEED, UnitOfPressure, CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT, UnitOfVolumetricFlux
 )
 
 # 方便直接使用Home Assistant Brands上面的和风天气图标, 在这里和manifest.json中修改domain为heweather
@@ -24,12 +24,13 @@ REQUIRED_FILES = [
     "services.yaml",
     "translations/zh-Hans.json",
 ]
-VERSION = "0.1.0"
-ISSUE_URL = ""
 
-STARTUP = """
 
-"""
+"""默认信息"""
+VERSION: str = "0.1.0"
+ISSUE_URL: str = ""
+STARTUP = ""
+
 ATTR_UPDATE_TIME = "更新时间"
 ATTR_SUGGESTION = "建议"
 ATTRIBUTION = "Data provided by 和风天气"
@@ -52,12 +53,20 @@ CONF_DAILYSTEPS = "dailysteps"
 CONF_STARTTIME = "starttime"
 
 UNDO_UPDATE_LISTENER = "undo_update_listener"
+CONF_INTERVAL = "interval"
+TIME_BETWEEN_UPDATES = timedelta(minutes=10)
+
+DEFAULT_TIME = dt_util.now()
+CONF_OPTIONS = "options"
+CONF_LOCATION = "location"
+CONF_DISASTER_LEVEL = "disaster_level"
+CONF_DISASTER_MSG = "disaster_msg"
+
 
 OPTIONAL_SENSORS = (
     "windDir",
 )
 
-# new
 DISASTER_LEVEL = {
     "Cancel": 0,
     "None": 0,
@@ -70,30 +79,29 @@ DISASTER_LEVEL = {
     "Extreme": 6
 }
 
-TIME_BETWEEN_UPDATES = timedelta(minutes=360)
-
-DEFAULT_TIME = dt_util.now()
-CONF_OPTIONS = "options"
-CONF_LOCATION = "location"
-CONF_DISASTER_LEVEL = "disaster_level"
-CONF_DISASTER_MSG = "disaster_msg"
 
 OPTIONS = {
-    "temperature": [SensorDeviceClass.TEMPERATURE, "室外温度", "mdi:thermometer", UnitOfTemperature.CELSIUS,
-                    UnitOfTemperature.FAHRENHEIT],
-    "humidity": [SensorDeviceClass.HUMIDITY, "室外湿度", "mdi:water-percent", PERCENTAGE, PERCENTAGE],
-    "feelsLike": [SensorDeviceClass.TEMPERATURE, "体感温度", "mdi:thermometer", UnitOfTemperature.CELSIUS,
+    "temperature": [SensorDeviceClass.TEMPERATURE, "室外温度", "mdi:thermometer",
+                    UnitOfTemperature.CELSIUS, UnitOfTemperature.FAHRENHEIT],
+    "humidity": [SensorDeviceClass.HUMIDITY,
+                 "室外湿度", "mdi:water-percent", PERCENTAGE, PERCENTAGE],
+    "feelsLike": [SensorDeviceClass.TEMPERATURE,
+                  "体感温度", "mdi:thermometer", UnitOfTemperature.CELSIUS,
                   UnitOfTemperature.FAHRENHEIT],
     "text": [None, "天气描述", "mdi:thermometer", '', ''],
-    "precip": [None, "小时降水量", "mdi:weather-rainy", UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
+    "precip": [None, "小时降水量", "mdi:weather-rainy",
+               UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR,
                UnitOfLength.INCHES],
     "windDir": [None, "风向", "mdi:windsock", DEGREE, DEGREE],
     "windScale": [None, "风力等级", "mdi:weather-windy", '', ''],
-    "windSpeed": [WIND_SPEED, "风速", "mdi:weather-windy", UnitOfSpeed.KILOMETERS_PER_HOUR,
+    "windSpeed": [WIND_SPEED, "风速", "mdi:weather-windy",
+                  UnitOfSpeed.KILOMETERS_PER_HOUR,
                   UnitOfSpeed.MILES_PER_HOUR],
-    "dew": [SensorDeviceClass.TEMPERATURE, "露点温度", "mdi:thermometer-water", SensorDeviceClass.TEMPERATURE,
+    "dew": [SensorDeviceClass.TEMPERATURE, "露点温度",
+            "mdi:thermometer-water",SensorDeviceClass.TEMPERATURE,
             UnitOfTemperature.FAHRENHEIT],
-    "pressure": [SensorDeviceClass.PRESSURE, "大气压强", "mdi:thermometer", UnitOfPressure.HPA, UnitOfPressure.HPA],
+    "pressure": [SensorDeviceClass.PRESSURE,
+                 "大气压强","mdi:thermometer", UnitOfPressure.HPA, UnitOfPressure.HPA],
     "vis": [None, "能见度", "mdi:thermometer", UnitOfLength.KILOMETERS, UnitOfLength.KILOMETERS],
     "place": [None, "气候位置", "mdi:thermometer", '', ''],
     "cloud": [None, "云量", "mdi:cloud-percent", PERCENTAGE, PERCENTAGE],
@@ -104,16 +112,22 @@ OPTIONS = {
              CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT],
     "pm10": [SensorDeviceClass.PM10, "PM10", "mdi:walk", CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
              CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT],
-    "no2": [SensorDeviceClass.NITROGEN_DIOXIDE, "二氧化氮", "mdi:emoticon-dead", CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+    "no2": [SensorDeviceClass.NITROGEN_DIOXIDE, "二氧化氮", "mdi:emoticon-dead", 
+            CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
             CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT],
-    "so2": [SensorDeviceClass.SULPHUR_DIOXIDE, "二氧化硫", "mdi:emoticon-dead", CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+    "so2": [SensorDeviceClass.SULPHUR_DIOXIDE, "二氧化硫", "mdi:emoticon-dead",
+            CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
             CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT],
-    "co": [SensorDeviceClass.CO, "一氧化碳", "mdi:molecule-co", CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-           CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT],
-    "o3": [SensorDeviceClass.OZONE, "臭氧", "mdi:weather-cloudy", CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
-           CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT],
+    "co": [SensorDeviceClass.CO, "一氧化碳", "mdi:molecule-co", 
+           CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT],
+    "o3": [SensorDeviceClass.OZONE, "臭氧", "mdi:weather-cloudy", 
+           CONCENTRATION_MICROGRAMS_PER_CUBIC_METER, CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT],
     "qlty": [None, "综合空气质量", "mdi:quality-high", '', ''],
     "disaster_warn": [None, "灾害预警", "mdi:alert", '', ''],
+}
+
+SUG_OPTIONS= {
+    # 建议
     "air": [None, "空气污染扩散条件指数", "mdi:air-conditioner", '', ''],
     "comfortable": [None, "舒适度指数", "mdi:human-greeting", '', ''],
     "cw": [None, "洗车指数", "mdi:car", '', ''],
@@ -146,3 +160,24 @@ CONDITION_CLASSES = {
     'snowy-rainy': ["雨夹雪", "雨雪天气", "阵雨夹雪"],
     'exceptional': ["扬沙", "浮尘", "沙尘暴", "强沙尘暴", "未知"],
 }
+
+class DataSourceUrl:
+    """API源"""
+    root = "https://devapi.qweather.com/"
+
+    def __init__(self, api_version, api_key,
+                 longitude, latitude, dailysteps=None, hourlysteps=None) -> None:
+        weather = f"{self.root}{api_version}/weather/"
+        air = f"{self.root}{api_version}/air/"
+        warning = f"{self.root}{api_version}/warning/"
+        indices = f"{self.root}{api_version}/indices/"
+
+        self.dailysteps = dailysteps
+        self.hourlysteps = hourlysteps
+
+        self.forecast_url = f"{weather}{dailysteps}d?location={longitude},{latitude}&key={api_key}"
+        self.weather_now_url = f"{weather}now?location={longitude},{latitude}&key={api_key}"
+        self.forecast_hourly_url = f"{weather}{hourlysteps}h?location={longitude},{latitude}&key={api_key}"
+        self.air_now_url = f"{air}now?location={longitude},{latitude}&key={api_key}"
+        self.disaster_warn_url = f"{warning}now?location={longitude},{latitude}&key={api_key}"
+        self.suggestion_url = f"{indices}1d?location={longitude},{latitude}&key={api_key}&type=0"
