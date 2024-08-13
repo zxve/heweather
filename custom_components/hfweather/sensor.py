@@ -23,9 +23,10 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
         sensors = []
-        options = OPTIONS.update(SUG_OPTIONS) if alert else OPTIONS
+        if alert:
+            OPTIONS.update(SUG_OPTIONS)
 
-        for sensor in options:
+        for sensor in OPTIONS:
             sensors.append(HfweatherSensor(name, sensor, alert, coordinator))
 
         async_add_entities(sensors, update_before_add=False)

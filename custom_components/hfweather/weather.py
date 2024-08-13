@@ -57,10 +57,10 @@ class HfweatherEntity(WeatherEntity):
     _attr_native_pressure_unit = UnitOfPressure.HPA
     _attr_native_wind_speed_unit = UnitOfSpeed.KILOMETERS_PER_HOUR
     _attr_native_visibility_unit = UnitOfLength.KILOMETERS
-    _attr_supported_features = (
-        WeatherEntityFeature.FORECAST_HOURLY | WeatherEntityFeature.FORECAST_DAILY
-        # | WeatherEntityFeature.FORECAST_TWICE_DAILY
-    )
+    # _attr_supported_features = (
+    #     WeatherEntityFeature.FORECAST_HOURLY | WeatherEntityFeature.FORECAST_DAILY
+    #     # | WeatherEntityFeature.FORECAST_TWICE_DAILY
+    # )
 
     def __init__(self, name, coordinator):
         """Initialize the  weather."""
@@ -72,8 +72,8 @@ class HfweatherEntity(WeatherEntity):
         self._updatetime = self.wdata["updatetime"]
         self._attr_unique_id = coordinator.data["location_key"]
         self._attr_supported_features = 0
-        # self._attr_supported_features = FORECAST_DAILY
-        # self._attr_supported_features |= FORECAST_HOURLY
+        self._attr_supported_features = WeatherEntityFeature.FORECAST_DAILY
+        self._attr_supported_features |= WeatherEntityFeature.FORECAST_HOURLY
 
     @property
     def name(self):
