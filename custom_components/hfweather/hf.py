@@ -71,14 +71,13 @@ class HfCoordinator(DataUpdateCoordinator):
             data_source = DataSourceUrl(api_version=self.api_version, longitude=self.longitude,
                                         latitude=self.latitude, api_key=self.api_key)
 
-            wsdata = await weather_sensor_data_update(data_source, self.disaster_msg, 
+            wsdata = await weather_sensor_data_update(data_source, self.disaster_msg,
                                                       self.disaster_level)
-            
             sgdata = await suggestion_data_update(self.hass, data_source, self.alert)
             wdata = await weather_data_update(data_source)
         except ClientConnectorError as error:
+            _LOGGER.debug("HfCoordinator update: %s", error)
             raise UpdateFailed(error)
-        # _LOGGER.debug("Requests remaining: %s", "url")
         return {
             "wsdata": wsdata,
             "sgdata": sgdata,
@@ -114,6 +113,7 @@ async def weather_sensor_data_update(data_source, disaster_msg, disaster_level):
                 json_data = await response.json()
                 disaster_warn = json_data["warning"]
     except Exception as e:
+        _LOGGER.debug("weather sensor update: %s", e)
         raise e
 
     # 根据http返回的结果，更新数据

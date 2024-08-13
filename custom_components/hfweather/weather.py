@@ -45,6 +45,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         async_add_entities([HfweatherEntity(name, coordinator)], update_before_add=True)
 
     except Exception as e:
+        _LOGGER.debug("weather setup entry: %s", e)
         raise e
 
 

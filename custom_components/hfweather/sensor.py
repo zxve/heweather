@@ -1,6 +1,7 @@
 '''
 sensor platform配置
 '''
+import logging
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.const import CONF_NAME, ATTR_ATTRIBUTION
@@ -10,7 +11,7 @@ from .const import (
     ATTRIBUTION, DOMAIN, OPTIONS, MANUFACTURER, OPTIONAL_SENSORS, SUG_OPTIONS, CONF_ALERT
 )
 
-# _LOGGER = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """xxx"""
@@ -28,6 +29,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         async_add_entities(sensors, update_before_add=False)
     except Exception as e:
+        _LOGGER.debug("sensor setup entry: %s", e)
         raise e
 
 
