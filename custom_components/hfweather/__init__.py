@@ -29,7 +29,7 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-_LOGGER.info("zxve 000")
+# _LOGGER.info("zxve 000")
 
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> bool:
@@ -76,7 +76,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
         return True
     except Exception as e:
-        _LOGGER.info("init setup entry: %s", e)
+        _LOGGER.info("hew- init setup entry: %s", e)
         raise e
 
 

@@ -33,7 +33,7 @@ from .const import (
 
 # PARALLEL_UPDATES = 1
 _LOGGER = logging.getLogger(__name__)
-SCAN_INTERVAL = timedelta(seconds=TIME_BETWEEN_UPDATES)
+# SCAN_INTERVAL = timedelta(seconds=TIME_BETWEEN_UPDATES)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -45,7 +45,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         async_add_entities([HfweatherEntity(name, coordinator)], update_before_add=True)
 
     except Exception as e:
-        _LOGGER.info("weather setup entry: %s", e)
+        _LOGGER.info("hew- weather setup entry: %s", e)
         raise e
 
 
@@ -64,14 +64,13 @@ class HfweatherEntity(WeatherEntity):
 
     def __init__(self, name, coordinator):
         """Initialize the  weather."""
-        _LOGGER.info("zxve 001")
         self._name = name
         self._object_id = 'localweather'
-        self.wdata = coordinator["wdata"]
+        self.wdata = coordinator.data["wdata"]
         self.coordinator = coordinator
-        _LOGGER.info(coordinator)
+        _LOGGER.info("hew- coordinator:{coordinator.data}")
         self._updatetime = self.wdata["updatetime"]
-        self._attr_unique_id = coordinator["location_key"]
+        self._attr_unique_id = coordinator.data["location_key"]
         self._attr_supported_features = 0
         # self._attr_supported_features = FORECAST_DAILY
         # self._attr_supported_features |= FORECAST_HOURLY
@@ -214,6 +213,7 @@ class HfweatherEntity(WeatherEntity):
                 reftime += timedelta(days=1)
                 forecast_data.append(data_dict)
 
+        _LOGGER.info("hew- forecast_data:{forecast_data}")
         return forecast_data
 
     async def async_forecast_hourly(self) -> list[Forecast]:
@@ -236,5 +236,7 @@ class HfweatherEntity(WeatherEntity):
 
             reftime += timedelta(hours=1)
             forecast_hourly_data.append(data_dict)
+
+        _LOGGER.info("hew- forecast_hourly_data:{forecast_hourly_data}")
 
         return forecast_hourly_data

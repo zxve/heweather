@@ -30,7 +30,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         async_add_entities(sensors, update_before_add=False)
     except Exception as e:
-        _LOGGER.info("sensor setup entry: %s", e)
+        _LOGGER.info("hew- sensor setup entry: %s", e)
         raise e
 
 
@@ -39,10 +39,8 @@ class HfweatherSensor(SensorEntity):
 
     def __init__(self, name, sensor, alert, coordinator):
         """初始化."""
-        _LOGGER.info("zxve 002")
-        self.wsdata = coordinator["wsdata"]
-        self.sdata = coordinator["sdata"]
-        self.data_source = coordinator
+        self.wsdata = coordinator.data["wsdata"]
+        self.sdata = coordinator.data["sdata"]
         self.coordinator = coordinator
         self.alert = alert
         opobj = OPTIONS[sensor]
@@ -50,10 +48,10 @@ class HfweatherSensor(SensorEntity):
         self._name = f"{name} {opobj[1]}"
         self._icon = opobj[2]
         self._attrs = {ATTR_ATTRIBUTION: ATTRIBUTION}
-        self._unit_of_measurement = opobj[3] if coordinator["is_metric"] == "metric:v2" else opobj[4]
+        self._unit_of_measurement = opobj[3] if coordinator.data["is_metric"] == "metric:v2" else opobj[4]
         self._type = sensor
         self._updatetime = self.wsdata["updatetime"]
-        self.location_key = coordinator["location_key"]
+        self.location_key = coordinator.data["location_key"]
         # 最好前面和weather对象保持一致，疑似需要
         self._attr_unique_id = f"{self.location_key}-{self._type}".lower()
 
