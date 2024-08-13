@@ -29,7 +29,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         async_add_entities(sensors, update_before_add=False)
     except Exception as e:
-        _LOGGER.debug("sensor setup entry: %s", e)
+        _LOGGER.info("sensor setup entry: %s", e)
         raise e
 
 
@@ -38,6 +38,7 @@ class HfweatherSensor(SensorEntity):
 
     def __init__(self, name, sensor, alert, coordinator):
         """初始化."""
+        _LOGGER.info("zxve 002")
         self.wsdata = coordinator["wsdata"]
         self.sdata = coordinator["sdata"]
         self.data_source = coordinator

@@ -76,7 +76,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
 
         return True
     except Exception as e:
-        _LOGGER.debug("init setup entry: %s", e)
+        _LOGGER.info("init setup entry: %s", e)
         raise e
 
 
