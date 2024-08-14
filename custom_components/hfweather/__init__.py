@@ -47,7 +47,7 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         disaster_level = config_entry.options.get(CONF_DISASTER_LEVEL, 1)
         alert = config_entry.options.get(CONF_ALERT, True)
         starttime = config_entry.options.get(CONF_STARTTIME, 0)
-        interval = config_entry.options.get(CONF_INTERVAL, 10)
+        interval = config_entry.options.get(CONF_INTERVAL, 120)
         # _LOGGER.debug("Using location_key: %s, get forecast: %s", location_key, api_version)
         websession = async_get_clientsession(hass)
         coordinator = HfCoordinator(

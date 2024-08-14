@@ -21,10 +21,11 @@ from .const import (
     CONF_ALERT,
     CONF_DAILYSTEPS,
     CONF_DISASTER_LEVEL,
-    # CONF_DISASTER_MSG,
+    CONF_DISASTER_MSG,
     CONF_HOURLYSTEPS,
     CONF_STARTTIME,
-    DOMAIN, NAME
+    DOMAIN, NAME,
+    CONF_INTERVAL,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -98,7 +99,8 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
                                      default=self.hass.config.longitude)] = cv.longitude
             data_schema[vol.Optional(CONF_LATITUDE,
                                      default=self.hass.config.latitude)] = cv.latitude
-            # data_schema[vol.Optional(CONF_DISASTER_LEVEL, default=1)] = int
+            data_schema[vol.Optional(CONF_INTERVAL, default=120)] = int
+            data_schema[vol.Optional(CONF_DISASTER_LEVEL, default=1)] = int
             # data_schema[vol.Optional(CONF_DISASTER_MSG, default="注意")] = str
 
             data_schema[vol.Optional(CONF_NAME, default=NAME)] = str
@@ -147,14 +149,18 @@ class HfweatherOptionsFlow(config_entries.OptionsFlow):
                         CONF_HOURLYSTEPS,
                         default=self.config_entry.options.get(CONF_HOURLYSTEPS, 24),
                     ): vol.All(vol.Coerce(int), vol.Range(min=24, max=168)),
-                    vol.Optional(
-                        CONF_STARTTIME,
-                        default=self.config_entry.options.get(CONF_STARTTIME, 0),
-                    ): vol.All(vol.Coerce(int), vol.Range(min=-5, max=0)),
+                    # vol.Optional(
+                    #     CONF_STARTTIME,
+                    #     default=self.config_entry.options.get(CONF_STARTTIME, 0),
+                    # ): vol.All(vol.Coerce(int), vol.Range(min=-5, max=0)),
                     vol.Optional(
                         CONF_ALERT,
                         default=self.config_entry.options.get(CONF_ALERT, False),
                     ): bool,
+                    vol.Optional(
+                        CONF_INTERVAL,
+                        default=self.config_entry.options.get(CONF_INTERVAL, 120),
+                    ): vol.All(vol.Coerce(int), vol.Range(min=60)),
                     vol.Optional(
                         CONF_DISASTER_LEVEL,
                         default=self.config_entry.options.get(CONF_DISASTER_LEVEL, 0),
