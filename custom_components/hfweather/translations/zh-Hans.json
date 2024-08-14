@@ -11,6 +11,8 @@
           "api_version": "API版本,默认是v7",
           "latitude": "维度",
           "longitude": "经度",
+          "interval": "定时刷新数据间隔（分钟）",
+          "disaster_level": "灾情预警级别",
           "name": "名称"
         }
       }
