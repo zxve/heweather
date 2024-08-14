@@ -10,6 +10,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.util.unit_system import METRIC_SYSTEM
 from .const import (
+    SUG_MAP,
     DOMAIN,
     CONDITION_CLASSES,
     DISASTER_LEVEL,
@@ -203,48 +204,11 @@ async def suggestion_data_update(hass, data_source, alert):
     # 根据http返回的结果，更新数据
     all_result = result["daily"]
     # updatetime = result["updateTime"]
+
     for i in all_result:
-        if i["type"] == "1":
-            data["sport"] = [i["category"], i["text"]]
-
-        if i["type"] == "10":
-            data["air"] = [i["category"], i["text"]]
-
-        if i["type"] == "8":
-            data["comf"] = [i["category"], i["text"]]
-
-        if i["type"] == "2":
-            data["cw"] = [i["category"], i["text"]]
-
-        if i["type"] == "3":
-            data["drsg"] = [i["category"], i["text"]]
-
-        if i["type"] == "9":
-            data["flu"] = [i["category"], i["text"]]
-
-        if i["type"] == "6":
-            data["trav"] = [i["category"], i["text"]]
-
-        if i["type"] == "5":
-            data["uv"] = [i["category"], i["text"]]
-
-        if i["type"] == "7":
-            data["guomin"] = [i["category"], i["text"]]
-
-        if i["type"] == "11":
-            data["kongtiao"] = [i["category"], i["text"]]
-
-        if i["type"] == "12":
-            data["sunglass"] = [i["category"], i["text"]]
-
-        if i["type"] == "14":
-            data["liangshai"] = [i["category"], i["text"]]
-
-        if i["type"] == "15":
-            data["jiaotong"] = [i["category"], i["text"]]
-
-        if i["type"] == "16":
-            data["fangshai"] = [i["category"], i["text"]]
+        sug_type = SUG_MAP.get(i["type"], 0)
+        if sug_type:
+            data[sug_type] = [i["category"], i["text"]]
     return data
 
 async def weather_data_update(data_source):

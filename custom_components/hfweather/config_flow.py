@@ -159,7 +159,7 @@ class HfweatherOptionsFlow(config_entries.OptionsFlow):
                     ): bool,
                     vol.Optional(
                         CONF_INTERVAL,
-                        default=self.config_entry.options.get(CONF_INTERVAL, 120),
+                        default=self.config_entry.options.get(CONF_INTERVAL, 720),
                     ): vol.All(vol.Coerce(int), vol.Range(min=60)),
                     vol.Optional(
                         CONF_DISASTER_LEVEL,

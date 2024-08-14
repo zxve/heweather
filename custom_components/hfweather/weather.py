@@ -42,7 +42,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     try:
         name = config_entry.data[CONF_NAME]
         coordinator = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
-        async_add_entities([HfweatherEntity(name, coordinator)], update_before_add=True)
+        async_add_entities([HfweatherEntity(name, coordinator)], update_before_add=False)
 
     except Exception as e:
         _LOGGER.info("hew- weather setup entry: %s", e)

@@ -161,6 +161,23 @@ CONDITION_CLASSES = {
     'exceptional': ["扬沙", "浮尘", "沙尘暴", "强沙尘暴", "未知"],
 }
 
+SUG_MAP = {
+    "1": "sport",
+    "2": "cw",
+    "3": "drsg",
+    "5": "uv",
+    "6": "trav",
+    "7": "guomin",
+    "8": "comf",
+    "9": "flu",
+    "10": "air",
+    "11": "kongtiao",
+    "12": "sunglass",
+    "14": "liangshai",
+    "15": "jiaotong",
+    "16": "fangshai",
+}
+
 class DataSourceUrl:
     """API源"""
     root = "https://devapi.qweather.com/"
