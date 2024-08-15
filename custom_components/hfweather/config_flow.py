@@ -21,9 +21,9 @@ from .const import (
     CONF_ALERT,
     CONF_DAILYSTEPS,
     CONF_DISASTER_LEVEL,
-    CONF_DISASTER_MSG,
+    # CONF_DISASTER_MSG,
     CONF_HOURLYSTEPS,
-    CONF_STARTTIME,
+    # CONF_STARTTIME,
     DOMAIN, NAME,
     CONF_INTERVAL,
 )
@@ -82,14 +82,14 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 else:
                     self._errors["base"] = "communication"
 
-                return await self._show_config_form(user_input)
+                return await self._show_config_form()
 
-            return await self._show_config_form(user_input)
+            return await self._show_config_form()
         except Exception as e:
             # traceback.print_exc()
             raise e
 
-    async def _show_config_form(self, user_input):
+    async def _show_config_form(self):
         try:
             data_schema = OrderedDict()
             data_schema[vol.Required(CONF_API_KEY)] = str
@@ -110,8 +110,8 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
         except Exception as e:
             raise e
 
-    async def async_step_import(self, user_input):
-        """xxx"""
+    async def async_step_import(self):
+        """Import a config entry."""
         if self._async_current_entries():
             return self.async_abort(reason="single_instance_allowed")
 
@@ -124,16 +124,16 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class HfweatherOptionsFlow(config_entries.OptionsFlow):
-    """xxx"""
+    """config flow option"""
     def __init__(self, config_entry):
         self.config_entry = config_entry
 
-    async def async_step_init(self, user_input=None):
-        """xxx"""
+    async def async_step_init(self):
+        """Manage the options."""
         return await self.async_step_user()
 
     async def async_step_user(self, user_input=None):
-        """xxx"""
+        """init by user"""
         if user_input is not None:
             return self.async_create_entry(title="", data=user_input)
 

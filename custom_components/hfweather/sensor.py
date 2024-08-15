@@ -2,7 +2,8 @@
 sensor platform配置
 '''
 import logging
-from homeassistant.components.sensor import SensorEntity
+# from homeassistant.components.sensor import SensorEntity
+from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.device_registry import DeviceEntryType
 from homeassistant.const import CONF_NAME, ATTR_ATTRIBUTION
 
@@ -35,7 +36,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         raise e
 
 
-class HfweatherSensor(SensorEntity):
+class HfweatherSensor(Entity):
     """定义一个温度传感器的类，继承自HomeAssistant的Entity类."""
 
     def __init__(self, name, sensor, alert, coordinator):
@@ -49,7 +50,8 @@ class HfweatherSensor(SensorEntity):
         self._name = f"{name} {opobj[1]}"
         self._icon = opobj[2]
         self._attrs = {ATTR_ATTRIBUTION: ATTRIBUTION}
-        self._unit_of_measurement = opobj[3] if coordinator.data["is_metric"] == "metric:v2" else opobj[4]
+        self._unit_of_measurement = opobj[3] if (
+            coordinator.data["is_metric"] == "metric:v2") else opobj[4]
         self._type = sensor
         self._updatetime = self.wsdata["updatetime"]
         self.location_key = coordinator.data["location_key"]
@@ -63,7 +65,7 @@ class HfweatherSensor(SensorEntity):
     @property
     def should_poll(self):
         """Return the polling requirement of the entity."""
-        return True
+        return False
 
     @property
     def attribution(self):

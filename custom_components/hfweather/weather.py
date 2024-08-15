@@ -28,13 +28,11 @@ from homeassistant.const import (
 from homeassistant.helpers.device_registry import DeviceEntryType
 
 from .const import (
-    ATTRIBUTION, CONDITION_CLASSES, COORDINATOR, DOMAIN, MANUFACTURER, TIME_BETWEEN_UPDATES
+    ATTRIBUTION, CONDITION_CLASSES, COORDINATOR, DOMAIN, MANUFACTURER
 )
 
 # PARALLEL_UPDATES = 1
 _LOGGER = logging.getLogger(__name__)
-# SCAN_INTERVAL = timedelta(seconds=TIME_BETWEEN_UPDATES)
-
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
     """weather setup entry"""
@@ -47,7 +45,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     except Exception as e:
         _LOGGER.info("hew- weather setup entry: %s", e)
         raise e
-
 
 class HfweatherEntity(WeatherEntity):
     """Representation of a weather condition."""
@@ -126,10 +123,10 @@ class HfweatherEntity(WeatherEntity):
         """Return the temperature."""
         return self.wdata["temperature"]
 
-    @property
-    def native_temperature_unit(self):
-        """Return the unit of measurement."""
-        return self._attr_native_temperature_unit
+    # @property
+    # def native_temperature_unit(self):
+    #     """Return the unit of measurement."""
+    #     return self._attr_native_temperature_unit
 
     @property
     def humidity(self):

@@ -45,6 +45,7 @@ class HfCoordinator(DataUpdateCoordinator):
         self.hass = hass
         self.api_key = api_key
         self.api_version = api_version
+        self.websession = websession
         self.location_key = location_key
         self.longitude = longitude
         self.latitude = latitude
@@ -79,7 +80,7 @@ class HfCoordinator(DataUpdateCoordinator):
             wdata = await weather_data_update(data_source)
         except ClientConnectorError as error:
             _LOGGER.info("hew- HfCoordinator update: %s", error)
-            raise UpdateFailed(error)
+            raise UpdateFailed(error) from error
         return {
             "wsdata": wsdata,
             "sgdata": sgdata,
@@ -101,9 +102,9 @@ async def weather_sensor_data_update(data_source, disaster_msg, disaster_level):
     # params = {"location": f"{longitude}/{latitude}", "key": key, }
     place = None
     try:
-        timeout = aiohttp.ClientTimeout(total=12)
+        time_out = aiohttp.ClientTimeout(total=12)
         connector = aiohttp.TCPConnector(limit=10)
-        async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
+        async with aiohttp.ClientSession(connector=connector, timeout=time_out) as session:
             async with session.get(weather_now_url) as response:
                 json_data = await response.json()
                 weather = json_data["now"]
@@ -220,9 +221,9 @@ async def weather_data_update(data_source):
     # params = {"location": f"{longitude}/{latitude}", "key": key}
     data = {}
     try:
-        timeout = aiohttp.ClientTimeout(total=12)
+        time_out = aiohttp.ClientTimeout(total=12)
         connector = aiohttp.TCPConnector(limit=10)
-        async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
+        async with aiohttp.ClientSession(connector=connector, timeout=time_out) as session:
             async with session.get(weather_now_url) as response:
                 json_data = await response.json()
                 weather = json_data["now"]
