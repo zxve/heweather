@@ -82,14 +82,14 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 else:
                     self._errors["base"] = "communication"
 
-                return await self._show_config_form()
+                return await self._show_config_form(user_input)
 
-            return await self._show_config_form()
+            return await self._show_config_form(user_input)
         except Exception as e:
             # traceback.print_exc()
             raise e
 
-    async def _show_config_form(self):
+    async def _show_config_form(self, user_input):
         try:
             data_schema = OrderedDict()
             data_schema[vol.Required(CONF_API_KEY)] = str
@@ -110,7 +110,7 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
         except Exception as e:
             raise e
 
-    async def async_step_import(self):
+    async def async_step_import(self, user_input):
         """Import a config entry."""
         if self._async_current_entries():
             return self.async_abort(reason="single_instance_allowed")
@@ -128,7 +128,7 @@ class HfweatherOptionsFlow(config_entries.OptionsFlow):
     def __init__(self, config_entry):
         self.config_entry = config_entry
 
-    async def async_step_init(self):
+    async def async_step_init(self, user_input=None):
         """Manage the options."""
         return await self.async_step_user()
 
