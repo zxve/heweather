@@ -38,7 +38,6 @@ class HfCoordinator(DataUpdateCoordinator):
         # disaster_msg,
         disaster_level,
         sugg: bool,
-        starttime: int,
         interval: int,
     ):
         """Initialize."""
@@ -55,7 +54,6 @@ class HfCoordinator(DataUpdateCoordinator):
         self.disaster_level = disaster_level
         self.sugg = sugg
         self.interval = interval
-        self.starttime = starttime
         self.is_metric = "metric:v2"
         if hass.config.units is METRIC_SYSTEM:
             self.is_metric = "metric:v2"
