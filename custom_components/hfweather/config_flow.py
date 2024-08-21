@@ -157,7 +157,7 @@ class HfweatherOptionsFlow(config_entries.OptionsFlow):
                     ): vol.All(vol.Coerce(int), vol.Range(min=60)),
                     vol.Optional(
                         CONF_DISASTER_LEVEL,
-                        default=self.config_entry.options.get(CONF_DISASTER_LEVEL, 0),
+                        default=self.config_entry.options.get(CONF_DISASTER_LEVEL, 1),
                     ): vol.All(vol.Coerce(int), vol.Range(min=0, max=6)),
                     # vol.Optional(
                     #     CONF_DISASTER_MSG,
