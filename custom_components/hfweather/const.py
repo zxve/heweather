@@ -28,7 +28,7 @@ REQUIRED_FILES = [
 
 
 """默认信息"""
-VERSION: str = "0.1.2"
+VERSION: str = "0.1.0"
 ISSUE_URL: str = ""
 STARTUP = ""
 
