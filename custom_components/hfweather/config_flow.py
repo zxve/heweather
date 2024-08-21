@@ -18,12 +18,11 @@ from homeassistant.const import (
 from homeassistant.core import callback
 
 from .const import (
-    CONF_ALERT,
+    CONF_SUGG,
     CONF_DAILYSTEPS,
     CONF_DISASTER_LEVEL,
     # CONF_DISASTER_MSG,
     CONF_HOURLYSTEPS,
-    # CONF_STARTTIME,
     DOMAIN, NAME,
     CONF_INTERVAL,
 )
@@ -33,7 +32,7 @@ _LOGGER = logging.getLogger(__name__)
 
 @config_entries.HANDLERS.register(DOMAIN)
 class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
-    """xxx"""
+    """初始化设置模块"""
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
@@ -44,12 +43,13 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     # @asyncio.coroutine
     def get_data(self, url):
-        """xxx"""
+        """请求url"""
         json_text = requests.get(url, timeout=100).content
         resdata = json.loads(json_text)
         return resdata
 
     async def async_step_user(self, user_input=None):
+        “”“获取第一次数据”“”
         try:
             self._errors = {}
             if user_input is not None:
@@ -90,6 +90,7 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
             raise e
 
     async def _show_config_form(self, user_input):
+        """第一次配置参数"""
         try:
             data_schema = OrderedDict()
             data_schema[vol.Required(CONF_API_KEY)] = str
@@ -99,9 +100,6 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
                                      default=self.hass.config.longitude)] = cv.longitude
             data_schema[vol.Optional(CONF_LATITUDE,
                                      default=self.hass.config.latitude)] = cv.latitude
-            # data_schema[vol.Optional(CONF_INTERVAL, default=120)] = int
-            # data_schema[vol.Optional(CONF_DISASTER_LEVEL, default=1)] = int
-            # data_schema[vol.Optional(CONF_DISASTER_MSG, default="注意")] = str
 
             data_schema[vol.Optional(CONF_NAME, default=NAME)] = str
             return self.async_show_form(
@@ -124,7 +122,7 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class HfweatherOptionsFlow(config_entries.OptionsFlow):
-    """config flow option"""
+    """选项设置"""
     def __init__(self, config_entry):
         self.config_entry = config_entry
 
@@ -149,13 +147,9 @@ class HfweatherOptionsFlow(config_entries.OptionsFlow):
                         CONF_HOURLYSTEPS,
                         default=self.config_entry.options.get(CONF_HOURLYSTEPS, 24),
                     ): vol.All(vol.Coerce(int), vol.Range(min=24, max=168)),
-                    # vol.Optional(
-                    #     CONF_STARTTIME,
-                    #     default=self.config_entry.options.get(CONF_STARTTIME, 0),
-                    # ): vol.All(vol.Coerce(int), vol.Range(min=-5, max=0)),
                     vol.Optional(
-                        CONF_ALERT,
-                        default=self.config_entry.options.get(CONF_ALERT, False),
+                        CONF_SUGG,
+                        default=self.config_entry.options.get(CONF_SUGG, False),
                     ): bool,
                     vol.Optional(
                         CONF_INTERVAL,

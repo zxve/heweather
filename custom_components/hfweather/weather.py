@@ -31,7 +31,6 @@ from .const import (
     ATTRIBUTION, CONDITION_CLASSES, COORDINATOR, DOMAIN, MANUFACTURER
 )
 
-# PARALLEL_UPDATES = 1
 _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -54,10 +53,6 @@ class HfweatherEntity(WeatherEntity):
     _attr_native_pressure_unit = UnitOfPressure.HPA
     _attr_native_wind_speed_unit = UnitOfSpeed.KILOMETERS_PER_HOUR
     _attr_native_visibility_unit = UnitOfLength.KILOMETERS
-    # _attr_supported_features = (
-    #     WeatherEntityFeature.FORECAST_HOURLY | WeatherEntityFeature.FORECAST_DAILY
-    #     # | WeatherEntityFeature.FORECAST_TWICE_DAILY
-    # )
 
     def __init__(self, name, coordinator):
         """Initialize the  weather."""
@@ -224,7 +219,6 @@ class HfweatherEntity(WeatherEntity):
                 ATTR_FORECAST_CONDITION: entry[0],
                 ATTR_FORECAST_NATIVE_TEMP: entry[1],
                 ATTR_FORECAST_HUMIDITY: entry[2],
-                # "native_precipitation": entry[3],
                 ATTR_FORECAST_WIND_BEARING: entry[4],
                 ATTR_FORECAST_NATIVE_WIND_SPEED: entry[5],
                 "precipitation_probability": entry[6],

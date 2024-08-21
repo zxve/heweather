@@ -35,9 +35,9 @@ class HfCoordinator(DataUpdateCoordinator):
         latitude,
         dailysteps: int,
         hourlysteps: int,
-        disaster_msg,
+        # disaster_msg,
         disaster_level,
-        alert: bool,
+        sugg: bool,
         starttime: int,
         interval: int,
     ):
@@ -51,9 +51,9 @@ class HfCoordinator(DataUpdateCoordinator):
         self.latitude = latitude
         self.dailysteps = dailysteps
         self.hourlysteps = hourlysteps
-        self.disaster_msg = disaster_msg
+        # self.disaster_msg = disaster_msg
         self.disaster_level = disaster_level
-        self.alert = alert
+        self.sugg = sugg
         self.interval = interval
         self.starttime = starttime
         self.is_metric = "metric:v2"
@@ -74,9 +74,8 @@ class HfCoordinator(DataUpdateCoordinator):
                                         latitude=self.latitude, api_key=self.api_key,
                                         dailysteps=self.dailysteps, hourlysteps=self.hourlysteps)
 
-            wsdata = await weather_sensor_data_update(data_source, self.disaster_msg,
-                                                      self.disaster_level)
-            sgdata = await suggestion_data_update(self.hass, data_source, self.alert)
+            wsdata = await weather_sensor_data_update(data_source, self.disaster_level)
+            sgdata = await suggestion_data_update(self.hass, data_source, self.sugg)
             wdata = await weather_data_update(data_source)
         except ClientConnectorError as error:
             _LOGGER.info("hew- HfCoordinator update: %s", error)
@@ -90,16 +89,13 @@ class HfCoordinator(DataUpdateCoordinator):
         }
 
 
-async def weather_sensor_data_update(data_source, disaster_msg, disaster_level):
-    """xxx"""
-    # if not alert:
-    #     return {"alert": False}
+async def weather_sensor_data_update(data_source, disaster_level):
+    """获取天气数据"""
     data = {}
 
     weather_now_url = data_source.weather_now_url
     air_now_url = data_source.air_now_url
     disaster_warn_url = data_source.disaster_warn_url
-    # params = {"location": f"{longitude}/{latitude}", "key": key, }
     place = None
     try:
         time_out = aiohttp.ClientTimeout(total=12)
@@ -148,29 +144,27 @@ async def weather_sensor_data_update(data_source, disaster_msg, disaster_level):
     allmsg = ''
     titlemsg = ''
     for i in disaster_warn:
-        # if DISASTER_LEVEL[i["severity"]] >= 订阅等级:
         if DISASTER_LEVEL[i["severity"]] >= int(disaster_level):
             allmsg = f'{allmsg}{i["title"]}:{i["text"]}||'
             titlemsg = f'{titlemsg}{i["title"]}||'
 
     if len(titlemsg) < 5:
         disaster_warn = f'近日无{disaster_level}级及以上灾害'
-    # if(订阅标题)
-    elif disaster_msg == 'title':
-        disaster_warn = titlemsg
+    # elif disaster_msg == 'title':
+    #     disaster_warn = titlemsg
+    # 直接返回预警正文
     else:
         disaster_warn = allmsg
     data["disaster_warn"] = disaster_warn
     return data
 
 
-async def suggestion_data_update(hass, data_source, alert):
-    """xxx"""
-    if not alert:
-        return {"alert": False}
+async def suggestion_data_update(hass, data_source, sugg):
+    """获取建议数据"""
+    if not sugg:
+        return {}
 
     url = data_source.suggestion_url
-    # updatetime = ["1", "1"]
     data = {
         "air": ["1", "1"],
         "comf": ["1", "1"],
@@ -202,9 +196,7 @@ async def suggestion_data_update(hass, data_source, alert):
                       result["code"], url)
         return
 
-    # 根据http返回的结果，更新数据
     all_result = result["daily"]
-    # updatetime = result["updateTime"]
 
     for i in all_result:
         sug_type = SUG_MAP.get(i["type"], 0)
@@ -213,7 +205,7 @@ async def suggestion_data_update(hass, data_source, alert):
     return data
 
 async def weather_data_update(data_source):
-    """xxx"""
+    """获取预报数据"""
     forecast_url = data_source.forecast_url
     weather_now_url = data_source.weather_now_url
     forecast_hourly_url = data_source.forecast_hourly_url
@@ -256,15 +248,10 @@ async def weather_data_update(data_source):
 
     datemsg = forecast["daily"]
 
-    # forec_cond = []
-    # forec_text = []
     daily_tmp = []
     for n in range(data_source.dailysteps):
         for i, j in CONDITION_CLASSES.items():
             if datemsg[n]["textDay"] in j:
-                # forec_cond.append(i)
-                # forec_text.append(datemsg[n]["textDay"])
-
                 daily_tmp.append(
                     [i, int(datemsg[n]["tempMax"]), int(datemsg[n]["tempMin"]),
                       datemsg[n]["textDay"]
@@ -273,15 +260,10 @@ async def weather_data_update(data_source):
     data["forecast"] = daily_tmp
 
     hourlymsg = forecast_hourly["hourly"]
-    # forecast_hourly = []
-    # forec_text = []
     hourly_tmp = []
     for n in range(data_source.hourlysteps):
         for i, j in CONDITION_CLASSES.items():
             if hourlymsg[n]["text"] in j:
-                # forecast_hourly.append(i)
-                # forec_text.append(hourlymsg[n]["text"])
-
                 hourly_tmp.append(
                     [i, float(hourlymsg[n]["temp"]), float(hourlymsg[n]["humidity"]),
                      float(hourlymsg[n]["precip"]), hourlymsg[n]["windDir"],

@@ -14,7 +14,7 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from .hf import HfCoordinator
 
 from .const import (
-    CONF_ALERT,
+    CONF_SUGG,
     CONF_DAILYSTEPS,
     CONF_HOURLYSTEPS,
     CONF_STARTTIME,
@@ -22,7 +22,7 @@ from .const import (
     COORDINATOR,
     DOMAIN,
     UNDO_UPDATE_LISTENER,
-    CONF_DISASTER_MSG,
+    # CONF_DISASTER_MSG,
     CONF_DISASTER_LEVEL,
     PLATFORMS,
 )
@@ -43,9 +43,9 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
         api_version = config_entry.data[CONF_API_VERSION]
         dailysteps = config_entry.options.get(CONF_DAILYSTEPS, 7)
         hourlysteps = config_entry.options.get(CONF_HOURLYSTEPS, 24)
-        disaster_msg = config_entry.options.get(CONF_DISASTER_MSG, "title")
+        # disaster_msg = config_entry.options.get(CONF_DISASTER_MSG, "title")
         disaster_level = config_entry.options.get(CONF_DISASTER_LEVEL, 1)
-        alert = config_entry.options.get(CONF_ALERT, True)
+        sugg = config_entry.options.get(CONF_SUGG, False)
         starttime = config_entry.options.get(CONF_STARTTIME, 0)
         interval = config_entry.options.get(CONF_INTERVAL, 720)
         # _LOGGER.debug("Using location_key: %s, get forecast: %s", location_key, api_version)
@@ -60,11 +60,11 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry) -> b
             latitude,
             dailysteps,
             hourlysteps,
-            disaster_msg,
+            # disaster_msg,
             disaster_level,
-            alert,
+            sugg,
             starttime,
-            interval,
+            interval
         )
         await coordinator.async_config_entry_first_refresh()
         undo_listener = config_entry.add_update_listener(update_listener)

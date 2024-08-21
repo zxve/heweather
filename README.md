@@ -1,1 +1,1 @@
-# hfweather
+# homeassistant 的和风天气插件。 

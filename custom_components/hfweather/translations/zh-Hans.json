@@ -29,7 +29,7 @@
         "data": {
           "dailysteps": "天级预报(3-7)",
           "hourlysteps": "小时级预报(24-186)",
-          "alert": "极端天气预警",
+          "sugg": "天气建议",
           "interval": "定时刷新数据间隔（分钟）",
           "disaster_level": "灾情预警级别"
         },
