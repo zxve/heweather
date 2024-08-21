@@ -49,7 +49,7 @@ class HfweatherHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return resdata
 
     async def async_step_user(self, user_input=None):
-        “”“获取第一次数据”“”
+        """获取第一次数据"""
         try:
             self._errors = {}
             if user_input is not None:
